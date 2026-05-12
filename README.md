@@ -97,6 +97,9 @@ wecamp_batch10_capstone_we2star/
 │   │   │   └── Sidebar.jsx
 │   │   │
 │   │   ├── mock_data/          # Dữ liệu giả lập cho development
+│   │   │   ├── index.js        # Centralized export for mock data modules
+│   │   │   ├── tripDetails.js  # Detailed trip information (budget, itinerary, packing)
+│   │   │   ├── trips.js        # List of trips overview data        
 │   │   ├── pages/              # Page-level components
 │   │   │   ├── HomePage.jsx
 │   │   │   └── NotFoundPage.jsx
