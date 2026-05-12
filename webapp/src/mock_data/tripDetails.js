@@ -1,0 +1,394 @@
+export const tripDetails = {
+  trip_001: {
+    tripId: "trip_001",
+    tripName: "Nha Trang Family Trip",
+    tripType: "Family",
+    startDate: "2026-06-10",
+    endDate: "2026-06-14",
+    currency: "VND",
+    budget: 14000000,
+
+    itinerary: [
+    {
+        id: 1,
+        title: "Flight to Nha Trang",
+        location: "Tan Son Nhat Airport",
+        date: "2026-06-10",
+        time: "08:00",
+        category: "Transport",
+        priority: "High",
+        status: "Done"
+    },
+    {
+        id: 2,
+        title: "Hotel Check-in",
+        location: "Tran Phu Beach Area",
+        date: "2026-06-10",
+        time: "11:30",
+        category: "Hotel",
+        priority: "High",
+        status: "Done"
+    },
+    {
+        id: 3,
+        title: "Seafood Lunch",
+        location: "Central Nha Trang",
+        date: "2026-06-10",
+        time: "13:00",
+        category: "Food",
+        priority: "Medium",
+        status: "Done"
+    },
+    {
+        id: 4,
+        title: "Beach Walk",
+        location: "Tran Phu Beach",
+        date: "2026-06-10",
+        time: "17:00",
+        category: "Sightseeing",
+        priority: "Low",
+        status: "Done"
+    },
+    {
+        id: 5,
+        title: "Visit Po Nagar Towers",
+        location: "Po Nagar",
+        date: "2026-06-11",
+        time: "09:00",
+        category: "Sightseeing",
+        priority: "High",
+        status: "In Progress"
+    },
+    {
+        id: 6,
+        title: "Mud Bath Experience",
+        location: "Thap Ba Hot Springs",
+        date: "2026-06-11",
+        time: "15:00",
+        category: "Activity",
+        priority: "Medium",
+        status: "Planned"
+    },
+    {
+        id: 7,
+        title: "Island Hopping Tour",
+        location: "Hon Mun Island",
+        date: "2026-06-12",
+        time: "08:00",
+        category: "Activity",
+        priority: "High",
+        status: "Overdue"
+    },
+    {
+        id: 8,
+        title: "Snorkeling Session",
+        location: "Hon Mun Marine Park",
+        date: "2026-06-12",
+        time: "14:00",
+        category: "Activity",
+        priority: "Medium",
+        status: "Planned"
+    },
+    {
+        id: 9,
+        title: "Night Market Shopping",
+        location: "Nha Trang Night Market",
+        date: "2026-06-13",
+        time: "19:00",
+        category: "Shopping",
+        priority: "Low",
+        status: "Cancelled"
+    },
+    {
+        id: 10,
+        title: "Cafe & Relaxation",
+        location: "Beachfront Cafe",
+        date: "2026-06-13",
+        time: "10:00",
+        category: "Food",
+        priority: "Low",
+        status: "Planned"
+    },
+    {
+        id: 11,
+        title: "Hotel Check-out",
+        location: "Tran Phu Beach Area",
+        date: "2026-06-14",
+        time: "11:00",
+        category: "Hotel",
+        priority: "High",
+        status: "Planned"
+    },
+    {
+        id: 12,
+        title: "Return Flight to Ho Chi Minh City",
+        location: "Cam Ranh International Airport",
+        date: "2026-06-14",
+        time: "16:00",
+        category: "Transport",
+        priority: "High",
+        status: "Planned"
+    }
+    ],
+
+    packingList: [
+    {
+        id: 1,
+        name: "Passport / ID Card",
+        category: "Documents",
+        quantity: 4,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 2,
+        name: "Hotel Booking Confirmation",
+        category: "Documents",
+        quantity: 1,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 3,
+        name: "T-Shirts",
+        category: "Clothes",
+        quantity: 8,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 4,
+        name: "Shorts",
+        category: "Clothes",
+        quantity: 6,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 5,
+        name: "Swimwear",
+        category: "Beach Essentials",
+        quantity: 4,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 6,
+        name: "Sunscreen",
+        category: "Beach Essentials",
+        quantity: 2,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 7,
+        name: "Beach Towels",
+        category: "Beach Essentials",
+        quantity: 4,
+        required: "No",
+        packed: "No"
+    },
+    {
+        id: 8,
+        name: "Phone Charger",
+        category: "Electronics",
+        quantity: 4,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 9,
+        name: "Power Bank",
+        category: "Electronics",
+        quantity: 2,
+        required: "No",
+        packed: "Yes"
+    },
+    {
+        id: 10,
+        name: "Camera",
+        category: "Electronics",
+        quantity: 1,
+        required: "No",
+        packed: "No"
+    },
+    {
+        id: 11,
+        name: "Toothbrush Kit",
+        category: "Toiletries",
+        quantity: 4,
+        required: "Yes",
+        packed: "Yes"
+    },
+    {
+        id: 12,
+        name: "Shampoo & Body Wash",
+        category: "Toiletries",
+        quantity: 2,
+        required: "No",
+        packed: "No"
+    },
+    {
+        id: 13,
+        name: "Medicine Kit",
+        category: "Medicine",
+        quantity: 1,
+        required: "Yes",
+        packed: "No"
+    },
+    {
+        id: 14,
+        name: "Motion Sickness Pills",
+        category: "Medicine",
+        quantity: 1,
+        required: "No",
+        packed: "No"
+    },
+    {
+        id: 15,
+        name: "Cash Wallet",
+        category: "Personal",
+        quantity: 1,
+        required: "Yes",
+        packed: "No"
+    },
+    {
+        id: 16,
+        name: "Snacks",
+        category: "Food",
+        quantity: 3,
+        required: "No",
+        packed: "No"
+    }
+    ],
+
+    budgetItems: [
+    {
+        id: 1,
+        name: "Flight Tickets SGN → PQC",
+        category: "Transport",
+        estimatedCost: 3800000,
+        actualCost: 3950000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 2,
+        name: "Airport Taxi",
+        category: "Transport",
+        estimatedCost: 200000,
+        actualCost: 180000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 3,
+        name: "Motorbike Rental",
+        category: "Transport",
+        estimatedCost: 300000,
+        actualCost: 350000,
+        paymentStatus: "Paid"
+    },
+
+    {
+        id: 4,
+        name: "Hotel Sun & Sea - 3 Nights",
+        category: "Accommodation",
+        estimatedCost: 3200000,
+        actualCost: 3150000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 5,
+        name: "Beach Resort Upgrade",
+        category: "Accommodation",
+        estimatedCost: 1000000,
+        actualCost: 1200000,
+        paymentStatus: "Unpaid"
+    },
+
+    {
+        id: 6,
+        name: "Local Seafood Dinner",
+        category: "Food",
+        estimatedCost: 500000,
+        actualCost: 450000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 7,
+        name: "Cafe & Drinks",
+        category: "Food",
+        estimatedCost: 300000,
+        actualCost: 280000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 8,
+        name: "Street Food Tour",
+        category: "Food",
+        estimatedCost: 400000,
+        actualCost: 550000,
+        paymentStatus: "Paid"
+    },
+
+    {
+        id: 9,
+        name: "VinWonders Tickets",
+        category: "Activity",
+        estimatedCost: 1800000,
+        actualCost: 1800000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 10,
+        name: "Island Tour",
+        category: "Activity",
+        estimatedCost: 1500000,
+        actualCost: 1700000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 11,
+        name: "Scuba Diving",
+        category: "Activity",
+        estimatedCost: 2000000,
+        actualCost: 0,
+        paymentStatus: "Unpaid"
+    },
+    {
+        id: 12,
+        name: "Night Market Shopping",
+        category: "Shopping",
+        estimatedCost: 800000,
+        actualCost: 1200000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 13,
+        name: "Souvenir Gifts",
+        category: "Shopping",
+        estimatedCost: 500000,
+        actualCost: 450000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 14,
+        name: "Travel Insurance",
+        category: "Other",
+        estimatedCost: 250000,
+        actualCost: 250000,
+        paymentStatus: "Paid"
+    },
+    {
+        id: 15,
+        name: "Camera Rental",
+        category: "Other",
+        estimatedCost: 150000,
+        actualCost: 150000,
+        paymentStatus: "Paid"
+      }
+    ],
+    meta: {
+      lastUpdated: "2026-05-12T00:00:00Z"
+    }
+  }
+};
