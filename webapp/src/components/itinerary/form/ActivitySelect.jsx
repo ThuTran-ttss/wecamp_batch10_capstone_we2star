@@ -30,7 +30,7 @@ const ActivitySelect = ({
           <option value="">Select {label.toLowerCase()}</option>
 
           {options.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={option} className="">
               {option}
             </option>
           ))}
@@ -46,7 +46,7 @@ const ActivitySelect = ({
 
           <span>{error}</span>
         </div>
-      )} 
+      )}
     </div>
   );
 };

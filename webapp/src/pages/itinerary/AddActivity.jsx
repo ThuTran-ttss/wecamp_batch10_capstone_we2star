@@ -10,34 +10,112 @@ import {
   BriefcaseBusiness,
   Backpack,
   Pencil,
+  Captions,
 } from "lucide-react";
 import ActivityInput from "@/components/itinerary/form/ActivityInput";
 import ActivityToggleCard from "@/components/itinerary/form/ActivityToggleCard";
 import ActivitySelect from "@/components/itinerary/form/ActivitySelect";
-import { activityCategories, activityStatuses } from "@/constants/itinerary";
+import {
+  activityCategories,
+  activityStatuses,
+  priorityLevels,
+} from "@/constants/itinerary";
 import { useForm } from "react-hook-form";
-
+import { v4 as uuidv4 } from "uuid";
+import { tripDetails } from "@/mock_data";
+import { toast } from "react-toastify";
+import PackingSection from "@/components/itinerary/PackingSection";
 const AddActivity = () => {
-  const [showBudget, setShowBugdet] = useState(false);
-  const [showPacking, setShowPacking] = useState(false);
+  const initialValue = {
+    title: "",
+    location: "",
+    date: "",
+    time: "",
+    category: "",
+    status: "",
+    priority: "Medium",
+
+    packing: {
+      itemName: "",
+      category: "",
+      packed: "false",
+      required: "true",
+    },
+    bugdet: {},
+  };
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
+    trigger,
+    reset,
+    getValues,
+    clearErrors,
   } = useForm({
-    defaultValues: {
-      title: "",
-      location: "",
-      date: "",
-      time: "",
-      category: "",
-      status: "",
-    },
+    mode: "onChange",
+    defaultValues: initialValue,
   });
-  const onSubmit = (data) => {
-    console.log(data);
+  const [activities, setActivities] = useState(() => {
+    const savedActivities = localStorage.getItem("itinerary");
+
+    return savedActivities
+      ? JSON.parse(savedActivities)
+      : tripDetails.trip_001.itinerary;
+  });
+  const [selectedPackingItems, setSelectedPackingItems] = useState([]);
+  const getInitialPackingItems = () => {
+    const savedPackingList = localStorage.getItem("packingList");
+
+    if (savedPackingList) {
+      return JSON.parse(savedPackingList);
+    }
+
+    return tripDetails.trip_001.packingList;
   };
-  const handleToggle = () => {};
+
+  const [packingItems, setPackingItems] = useState(getInitialPackingItems);
+  const onAddActivity = (newActivity) => {
+    const updatedActivities = [...activities, newActivity];
+
+    setActivities(updatedActivities);
+
+    localStorage.setItem("itinerary", JSON.stringify(updatedActivities));
+  };
+
+  const [showBudget, setShowBugdet] = useState(false);
+  const [showPacking, setShowPacking] = useState(false);
+  const selectedPriority = watch("priority");
+
+  const onSubmit = (data) => {
+    if (showPacking && selectedPackingItems.length === 0) {
+      toast.warning("Please add at least one packing item.");
+      return;
+    }
+    if (showBudget && budgets.length === 0) {
+      toast.warning("Please add at least one budget item.");
+      return;
+    }
+    if (selectedPackingItems.length > 0) {
+      const updatedPackingList = [...packingItems, ...selectedPackingItems];
+      localStorage.setItem("packingList", JSON.stringify(updatedPackingList));
+    }
+    const newActivity = {
+      id: uuidv4(),
+      ...data,
+    };
+
+    onAddActivity(newActivity);
+
+    console.log(newActivity);
+    toast.success("Activity added successfully!");
+    reset(initialValue);
+    setSelectedPackingItems([]);
+    setShowBugdet(false);
+    setShowPacking(false);
+  };
+
   return (
     <div className="shadow">
       <div className="mx-auto rounded-2xl bg-white px-10 py-6">
@@ -60,13 +138,12 @@ const AddActivity = () => {
           <ActivityInput
             label="Activity Title"
             placeholder="e.g. Dinner at Old Quarter"
-            icon={MapPin}
+            icon={Captions}
             error={errors.title?.message}
             required
             {...register("title", { required: "Title is required" })}
           />
           {/* LOCATION */}
-
           <ActivityInput
             label="Location"
             placeholder="Enter a landmark or address"
@@ -101,7 +178,6 @@ const AddActivity = () => {
               })}
             />
           </div>
-
           {/* CATEGORY + STATUS */}
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
             {/* CATEGORY */}
@@ -129,26 +205,24 @@ const AddActivity = () => {
             </label>
 
             <div className="grid grid-cols-3 gap-3">
-              <button
-                type="button"
-                className="cursor-pointer rounded-xl bg-gray-100 py-2 text-sm font-medium text-gray-500"
-              >
-                Low
-              </button>
+              {priorityLevels.map((priority) => {
+                const isActive = selectedPriority === priority;
 
-              <button
-                type="button"
-                className="rounded-xl border border-blue-500 bg-white py-2 text-sm font-semibold text-blue-500"
-              >
-                Medium
-              </button>
-
-              <button
-                type="button"
-                className="rounded-xl bg-gray-100 py-2 text-sm font-medium text-gray-500"
-              >
-                High
-              </button>
+                return (
+                  <button
+                    key={priority}
+                    type="button"
+                    onClick={() => setValue("priority", priority)}
+                    className={`rounded-xl py-2 text-sm transition ${
+                      isActive
+                        ? "cursor-pointer border border-blue-500 bg-white font-semibold text-blue-500"
+                        : "cursor-pointer bg-gray-100 font-medium text-gray-500"
+                    }`}
+                  >
+                    {priority}
+                  </button>
+                );
+              })}
             </div>
           </div>
           {/* TOGGLE SECTIONS */}
@@ -157,7 +231,7 @@ const AddActivity = () => {
             <ActivityToggleCard
               title={" Add Budget"}
               description={"Track expenses and stay on budget."}
-              onToggle={handleToggle}
+              onToggle={() => setShowBugdet(!showBudget)}
               color="green"
               enabled={showBudget}
               icon={BriefcaseBusiness}
@@ -172,6 +246,21 @@ const AddActivity = () => {
               enabled={showPacking}
               onToggle={() => setShowPacking(!showPacking)}
             />
+            {showPacking && (
+              <PackingSection
+                register={register}
+                watch={watch}
+                setValue={setValue}
+                reset={reset}
+                errors={errors}
+                selectedPackingItems={selectedPackingItems}
+                setSelectedPackingItems={setSelectedPackingItems}
+                trigger={trigger}
+                getValues={getValues}
+                clearErrors={clearErrors}
+                packingItems={packingItems}
+              />
+            )}
           </div>
           {/* FOOTER */}
           <div className="flex justify-end gap-3 pt-4">
