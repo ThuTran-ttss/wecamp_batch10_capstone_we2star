@@ -25,6 +25,7 @@ import { v4 as uuidv4 } from "uuid";
 import { tripDetails } from "@/mock_data";
 import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
+import BudgetSection from "@/components/itinerary/BudgetSection";
 const AddActivity = () => {
   const initialValue = {
     title: "",
@@ -83,7 +84,7 @@ const AddActivity = () => {
 
     localStorage.setItem("itinerary", JSON.stringify(updatedActivities));
   };
-
+  const [budgets, setBudgets] = useState([]);
   const [showBudget, setShowBugdet] = useState(false);
   const [showPacking, setShowPacking] = useState(false);
   const selectedPriority = watch("priority");
@@ -236,7 +237,16 @@ const AddActivity = () => {
               enabled={showBudget}
               icon={BriefcaseBusiness}
             />
-
+            {showBudget && (
+              <BudgetSection
+                register={register}
+                errors={errors}
+                trigger={trigger}
+                getValues={getValues}
+                budgets={budgets}
+                setBudgets={setBudgets}
+              />
+            )}{" "}
             {/* PACKING */}
             <ActivityToggleCard
               icon={Backpack}
