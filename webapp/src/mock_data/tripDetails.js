@@ -47,7 +47,7 @@ export const tripDetails = {
         time: "17:00",
         category: "Sightseeing",
         priority: "Low",
-        status: "Done"
+        status: "Planned"
     },
     {
         id: 5,
@@ -57,7 +57,7 @@ export const tripDetails = {
         time: "09:00",
         category: "Sightseeing",
         priority: "High",
-        status: "In Progress"
+        status: "Planned"
     },
     {
         id: 6,
@@ -77,7 +77,7 @@ export const tripDetails = {
         time: "08:00",
         category: "Activity",
         priority: "High",
-        status: "Overdue"
+        status: "In Progress"
     },
     {
         id: 8,
@@ -97,7 +97,7 @@ export const tripDetails = {
         time: "19:00",
         category: "Shopping",
         priority: "Low",
-        status: "Cancelled"
+        status: "Planned"
     },
     {
         id: 10,
