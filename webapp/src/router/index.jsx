@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import AddActivity from "@pages/itinerary/AddActivity";
 import MainLayout from "@/layouts/MainLayout";
+import ItineraryPage from "@/pages/itinerary/ItineraryPage";
 
 const router = createBrowserRouter([
   {
@@ -9,6 +10,10 @@ const router = createBrowserRouter([
     element: <MainLayout />,
 
     children: [
+      {
+        path: "itinerary",
+        element: <ItineraryPage />,
+      },
       {
         path: "itinerary/add-activity",
         element: <AddActivity />,

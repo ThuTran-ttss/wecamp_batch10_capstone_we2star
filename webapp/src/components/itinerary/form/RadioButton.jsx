@@ -3,12 +3,8 @@ import React from "react";
 const RadioButton = ({ label, name, options = [], register }) => {
   return (
     <div>
-      {/* LABEL */}
-      <label className="mb-3 block text-sm font-semibold text-gray-700">
-        {label}
-      </label>
+      <p className="mb-3 text-sm font-semibold text-gray-700">{label}</p>
 
-      {/* OPTIONS */}
       <div className="flex gap-5">
         {options.map((option) => (
           <label
@@ -22,7 +18,7 @@ const RadioButton = ({ label, name, options = [], register }) => {
               className="accent-blue-600"
             />
 
-            {option.label}
+            <span>{option.label}</span>
           </label>
         ))}
       </div>

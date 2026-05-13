@@ -1,7 +1,7 @@
-import ItineraryActivityCard from "./ItineraryActivityCard"
-import { formatFullDate, formatShortDate } from "../../utils/itineraryUtils"
+import ItineraryActivityCard from "./ItineraryActivityCard";
+import { formatFullDate, formatShortDate } from "../../utils/itineraryUtils";
 
-function ItineraryDayGroup({ dayNumber, date, activities, onEdit, onDelete  }) {
+function ItineraryDayGroup({ dayNumber, date, activities, onEdit, onDelete }) {
   return (
     <section className="grid grid-cols-[40px_1fr] gap-4">
       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
@@ -30,17 +30,19 @@ function ItineraryDayGroup({ dayNumber, date, activities, onEdit, onDelete  }) {
 
         <div className="space-y-4">
           {activities.map((activity) => (
-            <ItineraryActivityCard
-              key={activity.id}
-              activity={activity}
-              onDelete={onDelete}
-              onEdit={onEdit}
-            />
+            <div key={activity.id} id={activity.id}>
+              <ItineraryActivityCard
+                key={activity.id}
+                activity={activity}
+                onDelete={onDelete}
+                onEdit={onEdit}
+              />{" "}
+            </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 export default ItineraryDayGroup;

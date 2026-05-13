@@ -26,6 +26,8 @@ import { tripDetails } from "@/mock_data";
 import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
 import BudgetSection from "@/components/itinerary/BudgetSection";
+import { useLocation, useNavigate } from "react-router-dom";
+const TRIP_DETAILS_KEY = "trip_details";
 const AddActivity = () => {
   const initialValue = {
     title: "",
@@ -39,10 +41,16 @@ const AddActivity = () => {
     packing: {
       itemName: "",
       category: "",
-      packed: "false",
-      required: "true",
+      packed: "No",
+      required: "No",
     },
-    bugdet: {},
+    budget: {
+      name: "",
+      category: "",
+      estimatedCost: 0,
+      actualCost: 0,
+      paymentStatus: "UnPaid",
+    },
   };
   const {
     register,
@@ -58,6 +66,40 @@ const AddActivity = () => {
     mode: "onChange",
     defaultValues: initialValue,
   });
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const tripId = location.state?.tripId;
+  const [selectedPackingItems, setSelectedPackingItems] = useState([]);
+  const [selectedBudgets, setSelectedBudgets] = useState([]);
+  const [showBudget, setShowBugdet] = useState(false);
+  const [showPacking, setShowPacking] = useState(false);
+  const selectedPriority = watch("priority");
+  const getInitialPackingItems = () => {
+    const savedTrips = localStorage.getItem(TRIP_DETAILS_KEY);
+
+    if (savedTrips) {
+      const parsedTrips = JSON.parse(savedTrips);
+
+      return parsedTrips[tripId]?.packingList || [];
+    }
+
+    return tripDetails[tripId].packingList;
+  };
+  const getInitialBudgetItems = () => {
+    const savedTrips = localStorage.getItem(TRIP_DETAILS_KEY);
+
+    if (savedTrips) {
+      const parsedTrips = JSON.parse(savedTrips);
+
+      return parsedTrips[tripId]?.budgetItems || [];
+    }
+
+    return tripDetails[tripId].budgetItems;
+  };
+  const [budgetItems, setBudgetItems] = useState(getInitialBudgetItems);
+  const [packingItems, setPackingItems] = useState(getInitialPackingItems);
+
   const [activities, setActivities] = useState(() => {
     const savedActivities = localStorage.getItem("itinerary");
 
@@ -65,18 +107,7 @@ const AddActivity = () => {
       ? JSON.parse(savedActivities)
       : tripDetails.trip_001.itinerary;
   });
-  const [selectedPackingItems, setSelectedPackingItems] = useState([]);
-  const getInitialPackingItems = () => {
-    const savedPackingList = localStorage.getItem("packingList");
 
-    if (savedPackingList) {
-      return JSON.parse(savedPackingList);
-    }
-
-    return tripDetails.trip_001.packingList;
-  };
-
-  const [packingItems, setPackingItems] = useState(getInitialPackingItems);
   const onAddActivity = (newActivity) => {
     const updatedActivities = [...activities, newActivity];
 
@@ -84,42 +115,81 @@ const AddActivity = () => {
 
     localStorage.setItem("itinerary", JSON.stringify(updatedActivities));
   };
-  const [budgets, setBudgets] = useState([]);
-  const [showBudget, setShowBugdet] = useState(false);
-  const [showPacking, setShowPacking] = useState(false);
-  const selectedPriority = watch("priority");
 
   const onSubmit = (data) => {
+    console.log(data);
+
     if (showPacking && selectedPackingItems.length === 0) {
       toast.warning("Please add at least one packing item.");
+
       return;
     }
-    if (showBudget && budgets.length === 0) {
+
+    if (showBudget && selectedBudgets.length === 0) {
       toast.warning("Please add at least one budget item.");
+
       return;
     }
+
+    const savedTrips = JSON.parse(localStorage.getItem("tripDetails")) || {};
+
+    // packing
     if (selectedPackingItems.length > 0) {
-      const updatedPackingList = [...packingItems, ...selectedPackingItems];
-      localStorage.setItem("packingList", JSON.stringify(updatedPackingList));
+      savedTrips[tripId].packingList = [
+        ...savedTrips[tripId].packingList,
+        ...selectedPackingItems,
+      ];
     }
+
+    // budget
+    if (selectedBudgets.length > 0) {
+      savedTrips[tripId].budgetItems = [
+        ...savedTrips[tripId].budgetItems,
+        ...selectedBudgets,
+      ];
+    }
+
+    // activity
     const newActivity = {
       id: uuidv4(),
       ...data,
     };
 
-    onAddActivity(newActivity);
+    savedTrips[tripId].itinerary = [
+      ...savedTrips[tripId].itinerary,
+      newActivity,
+    ];
+    console.log(selectedPackingItems);
+
+    console.log(selectedBudgets);
 
     console.log(newActivity);
+    // save
+    localStorage.setItem("tripDetails", JSON.stringify(savedTrips));
+
     toast.success("Activity added successfully!");
+
+    // reset
     reset(initialValue);
+
     setSelectedPackingItems([]);
+
+    setSelectedBudgets([]);
+
     setShowBugdet(false);
+
     setShowPacking(false);
+
+    navigate("/itinerary", {
+      state: {
+        scrollToId: newActivity.id,
+      },
+    });
   };
 
   return (
-    <div className="shadow">
-      <div className="mx-auto rounded-2xl bg-white px-10 py-6">
+    <div className="bg-slate-50">
+      <div className="mx-auto max-w-6xl rounded-2xl py-6">
         {/* HEADER */}
         <div className="mb-8 flex items-start justify-between">
           <div>
@@ -219,6 +289,7 @@ const AddActivity = () => {
                         ? "cursor-pointer border border-blue-500 bg-white font-semibold text-blue-500"
                         : "cursor-pointer bg-gray-100 font-medium text-gray-500"
                     }`}
+                    {...register("priority")}
                   >
                     {priority}
                   </button>
@@ -243,8 +314,12 @@ const AddActivity = () => {
                 errors={errors}
                 trigger={trigger}
                 getValues={getValues}
-                budgets={budgets}
-                setBudgets={setBudgets}
+                budgetItems={budgetItems}
+                selectedBudgets={selectedBudgets}
+                setSelectedBudgets={setSelectedBudgets}
+                reset={reset}
+                setValue={setValue}
+                initialValue={initialValue}
               />
             )}{" "}
             {/* PACKING */}
@@ -269,12 +344,16 @@ const AddActivity = () => {
                 getValues={getValues}
                 clearErrors={clearErrors}
                 packingItems={packingItems}
+                initialValue={initialValue}
               />
             )}
           </div>
           {/* FOOTER */}
           <div className="flex justify-end gap-3 pt-4">
-            <button className="rounded-xl border px-6 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+            <button
+              type="button"
+              className="rounded-xl border px-6 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            >
               Cancel
             </button>
 

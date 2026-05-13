@@ -10,7 +10,7 @@ const ActivityInput = ({
   ...props
 }) => {
   return (
-    <div>
+    <div className="">
       {/* LABEL */}
       <label className="mb-2 block text-sm font-semibold text-gray-700">
         {label}
@@ -20,8 +20,8 @@ const ActivityInput = ({
 
       {/* INPUT */}
       <div
-        className={`flex items-center rounded-xl border px-4 py-2 ${
-          error ? "border-red-400" : "border-gray-300"
+        className={`flex items-center rounded-xl bg-white px-4 py-2 shadow ${
+          error ? "border-red-400" : ""
         }`}
       >
         {Icon && <Icon size={18} className="mr-3 text-gray-400" />}
@@ -30,7 +30,7 @@ const ActivityInput = ({
           type={type}
           placeholder={placeholder}
           {...props}
-          className="w-full text-sm outline-none"
+          className="w-full bg-white text-sm outline-none"
         />
       </div>
 

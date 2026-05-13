@@ -5,3 +5,4 @@ export const budgetCategories = [
   "Shopping",
   "Entertainment",
 ];
+export const paymentStatuses = ["Paid", "Pending"];

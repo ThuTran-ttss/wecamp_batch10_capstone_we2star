@@ -1,19 +1,19 @@
-import { formatShortDate } from "../../utils/itineraryUtils"
+import { formatShortDate } from "../../utils/itineraryUtils";
 
 function ItineraryFilters({
   filters,
   setFilters,
   availableDates,
   onClearFilters,
-  onAddActivity
+  onAddActivity,
 }) {
   function handleChange(event) {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setFilters((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
   }
 
   return (
@@ -22,7 +22,7 @@ function ItineraryFilters({
         name="date"
         value={filters.date}
         onChange={handleChange}
-        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
+        className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
       >
         <option value="All">All Dates</option>
 
@@ -37,7 +37,7 @@ function ItineraryFilters({
         name="category"
         value={filters.category}
         onChange={handleChange}
-        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
+        className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
       >
         <option value="All">All Categories</option>
         <option value="Transport">Transport</option>
@@ -53,7 +53,7 @@ function ItineraryFilters({
         name="status"
         value={filters.status}
         onChange={handleChange}
-        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
+        className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
       >
         <option value="All">All Statuses</option>
         <option value="Planned">Planned</option>
@@ -65,7 +65,7 @@ function ItineraryFilters({
         name="priority"
         value={filters.priority}
         onChange={handleChange}
-        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
+        className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700"
       >
         <option value="All">All Priorities</option>
         <option value="Low">Low</option>
@@ -76,19 +76,12 @@ function ItineraryFilters({
       <button
         type="button"
         onClick={onClearFilters}
-        className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+        className="cursor-pointer rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
       >
         Clear Filters
       </button>
-      <button
-        type="button"
-        onClick={onAddActivity}
-        className="rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-      >
-        + Add Activity
-      </button>
     </section>
-  )
+  );
 }
 
-export default ItineraryFilters
+export default ItineraryFilters;

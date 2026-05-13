@@ -4,23 +4,31 @@ import { Plus, DollarSign } from "lucide-react";
 
 import ActivityInput from "./form/ActivityInput";
 import ActivitySelect from "./form/ActivitySelect";
-import { budgetCategories } from "@/constants/budget";
-
-const paymentStatuses = ["Paid", "Pending"];
+import { budgetCategories, paymentStatuses } from "@/constants/budget";
+import BudgetItem from "./BudgetItem";
 
 const BudgetSection = ({
   register,
   errors,
   trigger,
   getValues,
-  budgets,
-  setBudgets,
+  budgetItems,
+  setSelectedBudgets,
+  selectedBudgets,
+  reset,
+  setValue,
+  initialValue,
 }) => {
+  const [budgetName, setBudgetName] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
+  const existingExpense = [...budgetItems, ...selectedBudgets].find(
+    (item) => item?.name?.toLowerCase() === budgetName.toLowerCase(),
+  );
   const handleAddBudget = async () => {
     const isValid = await trigger([
-      "budget.title",
+      "budget.name",
 
       "budget.category",
 
@@ -39,11 +47,49 @@ const BudgetSection = ({
       ...budgetData,
     };
 
-    setBudgets((prev) => [...prev, newBudget]);
+    setSelectedBudgets((prev) => [...prev, newBudget]);
 
     setShowForm(false);
+    reset({
+      budget: {
+        name: "",
+        category: "",
+        estimatedCost: 0,
+        actualCost: 0,
+        paymentStatus: "UnPaid",
+      },
+    });
+    setBudgetName("");
   };
+  const handleDeleteBudgetItem = (budgetName) => {
+    setSelectedBudgets((prev) =>
+      prev.filter((budget) => budget.name !== budgetName),
+    );
+  };
+  const handleEditBudgetItem = (budgetName) => {
+    const selectedBudget = selectedBudgets.find(
+      (budget) => budget.name === budgetName,
+    );
 
+    if (!selectedBudget) return;
+
+    setShowForm(true);
+    setIsEditing(true);
+
+    setValue("budget.name", selectedBudget.name);
+
+    setValue("budget.category", selectedBudget.category);
+
+    setValue("budget.estimatedCost", selectedBudget.estimatedCost);
+
+    setValue("budget.actualCost", selectedBudget.actualCost);
+
+    setValue("budget.paymentStatus", selectedBudget.paymentStatus);
+
+    setSelectedBudgets((prev) =>
+      prev.filter((budget) => budget.name !== budgetName),
+    );
+  };
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-300 bg-white transition-all duration-300">
       <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr]">
@@ -55,14 +101,112 @@ const BudgetSection = ({
               label="Expense Name"
               placeholder="Dinner at Old Quarter"
               required
-              error={errors.budget?.title?.message}
-              {...register("budget.title", {
-                required: "Expense name is required",
+              error={errors.budget?.name?.message}
+              {...register("budget.name", {
+                required: showForm ? "Expense name is required" : false,
+
+                validate: (value) => {
+                  if (!showForm) return true;
+
+                  if (!value) {
+                    return "Expense name is required";
+                  }
+                  const lowerValue = value.toLowerCase();
+
+                  const existedInBudgetList = budgetItems.some((item) => {
+                    if (
+                      isEditing &&
+                      item.name.toLowerCase() === budgetName.toLowerCase()
+                    ) {
+                      return false;
+                    }
+
+                    return item?.name?.toLowerCase() === lowerValue;
+                  });
+
+                  const existedInSelectedBudget = selectedBudgets.some(
+                    (item) => {
+                      if (
+                        isEditing &&
+                        item.name.toLowerCase() === budgetName.toLowerCase()
+                      ) {
+                        return false;
+                      }
+
+                      return item?.name?.toLowerCase() === lowerValue;
+                    },
+                  );
+
+                  if (existedInBudgetList || existedInSelectedBudget) {
+                    return "Expense already exists";
+                  }
+
+                  return true;
+                },
+
+                onChange: (e) => {
+                  setBudgetName(e.target.value);
+                },
               })}
             />
+            {existingExpense && !showForm && (
+              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-amber-700">
+                      This expense already exists.
+                    </p>
 
+                    <div className="mt-2 space-y-1 text-sm text-amber-700">
+                      <p>
+                        <span className="font-medium">Estimated Cost:</span>{" "}
+                        {existingExpense.estimatedCost.toLocaleString()}
+                      </p>{" "}
+                      <p>
+                        <span className="font-medium">Actual Cost:</span>{" "}
+                        {existingExpense.actualCost.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(true);
+
+                      setIsEditing(true);
+
+                      setValue("budget.name", existingExpense.name);
+
+                      setValue("budget.category", existingExpense.category);
+
+                      setValue(
+                        "budget.estimatedCost",
+                        existingExpense.estimatedCost,
+                      );
+
+                      setValue("budget.actualCost", existingExpense.actualCost);
+
+                      setValue(
+                        "budget.paymentStatus",
+                        existingExpense.paymentStatus,
+                      );
+
+                      setSelectedBudgets((prev) =>
+                        prev.filter(
+                          (budget) => budget.name !== existingExpense.name,
+                        ),
+                      );
+                    }}
+                    className="rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
+                  >
+                    Edit Existing Expense
+                  </button>
+                </div>
+              </div>
+            )}
             {/* SHOW FORM BUTTON */}
-            {!showForm && (
+            {!showForm && budgetName && !existingExpense && (
               <button
                 type="button"
                 onClick={() => setShowForm(true)}
@@ -146,38 +290,18 @@ const BudgetSection = ({
         <div className="p-4">
           <div className="mb-5 border-b border-gray-300 pb-2">
             <h3 className="text-lg font-semibold text-gray-800">
-              Expenses Added ({budgets.length})
+              Expenses Added ({selectedBudgets.length})
             </h3>
           </div>
 
           <div className="max-h-[320px] space-y-3 overflow-y-auto pr-2">
-            {budgets.map((budget) => (
-              <div
+            {selectedBudgets.map((budget) => (
+              <BudgetItem
+                budget={budget}
                 key={budget.id}
-                className="rounded-xl border border-gray-200 p-4"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold text-gray-800">
-                      {budget.title}
-                    </h4>
-
-                    <p className="mt-1 text-sm text-gray-500">
-                      {budget.category}
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-800">
-                      ${budget.estimatedCost}
-                    </p>
-
-                    <span className="text-xs text-blue-600">
-                      {budget.paymentStatus}
-                    </span>
-                  </div>
-                </div>
-              </div>
+                onDelete={handleDeleteBudgetItem}
+                onEdit={handleEditBudgetItem}
+              />
             ))}
           </div>
         </div>

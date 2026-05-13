@@ -19,13 +19,13 @@ const ActivitySelect = ({
 
       {/* SELECT */}
       <div
-        className={`flex items-center rounded-xl border px-4 py-2 ${
-          error ? "border-red-400" : "border-gray-300"
+        className={`flex cursor-pointer items-center rounded-xl bg-white px-4 py-2 shadow ${
+          error ? "border-red-400" : ""
         }`}
       >
         <select
           {...props}
-          className="w-full appearance-none bg-transparent text-sm outline-none"
+          className="w-full cursor-pointer appearance-none bg-transparent text-sm outline-none"
         >
           <option value="">Select {label.toLowerCase()}</option>
 

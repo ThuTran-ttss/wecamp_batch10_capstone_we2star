@@ -21,7 +21,7 @@ const ActivityToggleCard = ({
   onToggle,
 }) => {
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-gray-300 px-5 py-3">
+    <div className="flex items-center justify-between rounded-2xl bg-white px-5 py-4 shadow">
       {/* LEFT */}
       <div className="flex items-start gap-4">
         {/* ICON */}

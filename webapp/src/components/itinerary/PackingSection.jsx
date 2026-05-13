@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  Plus,
-  Minus,
-  ChevronDown,
-  Package,
-  Pencil,
-  Trash2,
-} from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 
 import { tripDetails } from "@/mock_data";
 import PackingItem from "./PackingItem";
@@ -28,6 +21,7 @@ const PackingSection = ({
   getValues,
   clearErrors,
   packingItems,
+  initialValue,
 }) => {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -36,17 +30,17 @@ const PackingSection = ({
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const existingItem = packingItems?.find(
-    (item) => item?.name?.toLowerCase() === itemName.toLowerCase(),
+  const existingItem = [...packingItems, ...selectedPackingItems].find(
+    (item) =>
+      (item?.name || item?.itemName)?.toLowerCase() === itemName.toLowerCase(),
   );
+  console.log(existingItem);
   const handleAddPackingItem = (data) => {
     const newItem = {
       id: Date.now(),
       ...data.packing,
       quantity,
     };
-
-    console.log(newItem);
 
     setSelectedPackingItems((prev) => [...prev, newItem]);
 
@@ -55,17 +49,17 @@ const PackingSection = ({
       packing: {
         itemName: "",
         category: "",
-        packed: "false",
-        required: "true",
+        packed: "No",
+        required: "No",
       },
     });
     setQuantity(1);
-    console.log(newItem);
+    setShowForm(!showForm);
+    setItemName("");
     return newItem;
   };
   const handleValidatePacking = async () => {
     const packingData = getValues("packing");
-
     const isEmpty = !packingData.itemName && !packingData.category;
 
     if (isEmpty && selectedPackingItems.length > 0) {
@@ -87,6 +81,9 @@ const PackingSection = ({
     handleAddPackingItem({
       packing: packingData,
     });
+    if (isEditing) {
+      setIsEditing(!isEditing);
+    }
 
     return true;
   };
@@ -104,12 +101,10 @@ const PackingSection = ({
 
     if (!selectedItem) return;
 
-    // SHOW FORM
     setShowForm(true);
 
     setIsEditing(true);
 
-    // SET VALUES
     setValue("packing.itemName", selectedItem.itemName);
 
     setValue("packing.category", selectedItem.category);
@@ -142,17 +137,31 @@ const PackingSection = ({
                   required: showForm ? "Packing name is required" : false,
                   validate: (value) => {
                     if (!showForm) return true;
-                    const existedInPackingList = packingItems.some(
-                      (item) =>
-                        item?.name?.toLowerCase() === value.toLowerCase(),
-                    );
+
+                    const lowerValue = value.toLowerCase();
+                    console.log(packingItems);
+                    const existedInPackingList = packingItems.some((item) => {
+                      if (isEditing && item?.id === existingItem?.id) {
+                        return false;
+                      }
+
+                      return item.name.toLowerCase() === lowerValue;
+                    });
+
                     const existedInSelectedList = selectedPackingItems.some(
-                      (item) =>
-                        item?.itemName?.toLowerCase() === value.toLowerCase(),
+                      (item) => {
+                        if (isEditing && item.id === existingItem.id) {
+                          return false;
+                        }
+
+                        return item.itemName.toLowerCase() === lowerValue;
+                      },
                     );
+
                     if (existedInPackingList || existedInSelectedList) {
                       return "Item already exists";
                     }
+
                     return true;
                   },
                   onChange: (e) => {
@@ -181,8 +190,19 @@ const PackingSection = ({
                         setShowForm(true);
 
                         setIsEditing(true);
-
+                        console.log(existingItem);
                         setQuantity(existingItem.quantity);
+
+                        setValue("packing.category", existingItem.category);
+                        setValue("packing.packed", existingItem.packed);
+                        setValue("packing.required", existingItem.required);
+                        setSelectedPackingItems((prev) =>
+                          prev.filter(
+                            (item) =>
+                              item.itemName !==
+                              (existingItem.name || existingItem.itemName),
+                          ),
+                        );
                       }}
                       className="rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
                     >
@@ -267,11 +287,11 @@ const PackingSection = ({
                     options={[
                       {
                         label: "Packed",
-                        value: "true",
+                        value: "Yes",
                       },
                       {
                         label: "Not Packed",
-                        value: "false",
+                        value: "No",
                       },
                     ]}
                   />
@@ -282,11 +302,11 @@ const PackingSection = ({
                     options={[
                       {
                         label: "Required",
-                        value: "true",
+                        value: "Yes",
                       },
                       {
                         label: "Optional",
-                        value: "false",
+                        value: "No",
                       },
                     ]}
                   />
@@ -297,7 +317,7 @@ const PackingSection = ({
                   <button
                     onClick={handleValidatePacking}
                     type="button"
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                    className="1flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
                   >
                     <Plus size={18} />
 
