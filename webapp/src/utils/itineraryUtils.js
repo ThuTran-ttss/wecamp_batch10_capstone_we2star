@@ -1,38 +1,40 @@
-import { act } from "react";
-
-export function isOverdueActivity (activity) {
+//check if activity is overdue
+export function isOverdueActivity(activity) {
   if (!activity.date || !activity.time) return false;
   const now = new Date();
-  const activityDateTime = new Date (`${activity.date}T${activity.time}`)
-  return activityDateTime < now && activity.status !=="Done"
+  const activityDateTime = new Date(`${activity.date}T${activity.time}`)
+  return activityDateTime < now && activity.status !== "Done"
 }
 
-export function filterItinerary (itinerary, filters ) {
+//use for filter button
+export function filterItinerary(itinerary, filters) {
   return itinerary.filter((activity) => {
     const matchDate = filters.date === "All" || activity.date === filters.date;
     const matchCategory = filters.category === "All" || activity.category === filters.category;
-    const matchStatus = filters.status ==="All" || activity.status === filters.status;
+    const matchStatus = filters.status === "All" || activity.status === filters.status;
     const matchPriority = filters.priority === "All" || activity.priority === filters.priority;
     return matchDate && matchCategory && matchStatus && matchPriority;
   })
 }
 
+// use for grouping activity
 export function groupItineraryByDate(itinerary) {
-  return itinerary.reduce((result, activity)=>{
-    if (!result[activity.date]){
+  return itinerary.reduce((result, activity) => {
+    if (!result[activity.date]) {
       result[activity.date] = [];
     }
     result[activity.date].push(activity);
     return result;
-  
+
   }, {})
 }
 
+//use to calculate stats
 export function getItineraryStats(itinerary) {
   const totalActivities = itinerary.length;
   let completedActivities = 0;
   let overdueActivities = 0;
-  
+
   for (let i = 0; i < totalActivities; i++) {
     const activity = itinerary[i];
     if (activity.status === "Done") {
@@ -42,8 +44,8 @@ export function getItineraryStats(itinerary) {
       overdueActivities++;
     }
   }
-  const totalDays= new Set(
-    itinerary.map((activity)=>activity.date)
+  const totalDays = new Set(
+    itinerary.map((activity) => activity.date)
   ).size;
   return {
     totalActivities,
@@ -53,6 +55,7 @@ export function getItineraryStats(itinerary) {
   }
 }
 
+//use for filter date
 export function getUniqueDates(itinerary) {
   const uniqueDateList = new Set(
     itinerary.map(activity => activity.date)
@@ -61,14 +64,14 @@ export function getUniqueDates(itinerary) {
 }
 // use for dropdown filter or button
 export function formatShortDate(dateString) {
-  return new Date(dateString).toLocaleDateString("en-US",{
+  return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric"
   })
 }
-//use for headline of dates
-export function formatFullDate(dateString){
-  return new Date(dateString).toLocaleDateString("en-US",{
+//use for date appearance
+export function formatFullDate(dateString) {
+  return new Date(dateString).toLocaleDateString("en-US", {
     weekday: "short",
     month: "long",
     day: "numeric",
@@ -82,6 +85,7 @@ export function getWeekday(dateString) {
   })
 }
 
+//Use to validate Edit Activity form 
 export function validateItineraryForm(formData) {
   const errors = {}
 

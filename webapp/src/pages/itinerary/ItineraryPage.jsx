@@ -10,9 +10,10 @@ import ItineraryStats from "../../components/itinerary/ItineraryStats";
 import ItineraryDayGroup from "../../components/itinerary/ItineraryDayGroup";
 import ItineraryFilters from "../../components/itinerary/ItineraryFilters";
 import ItineraryEditForm from "../../components/itinerary/ItineraryEditForm";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const ITINERARY_STORAGE_KEY = "itinerary";
+// const ITINERARY_STORAGE_KEY = "itinerary";
 
 function ItineraryPage() {
   const currentTrip = tripDetails.trip_001;
@@ -74,10 +75,10 @@ function ItineraryPage() {
 
   const [editingItem, setEditingItem] = useState(null);
 
-  //useEffect autosave
-  useEffect(() => {
-    localStorage.setItem(ITINERARY_STORAGE_KEY, JSON.stringify(itinerary));
-  }, [itinerary]);
+  //useEffect autosave (old key)
+  // useEffect(() => {
+  //   localStorage.setItem(ITINERARY_STORAGE_KEY, JSON.stringify(itinerary));
+  // }, [itinerary]);
   useEffect(() => {
     const savedTrips =
       JSON.parse(localStorage.getItem("tripDetails")) || tripDetails;
@@ -92,21 +93,19 @@ function ItineraryPage() {
   const groupedItinerary = groupItineraryByDate(filteredItinerary);
   const datesList = Object.keys(groupedItinerary).sort();
 
-  //add new activity
-  function handleAddActivityClick() {
-    navigate("/itinerary/add-activity");
-  }
   //delete
   function handleDeleteActivity(id) {
     const confirmed = window.confirm("Do you want to delete this activity?");
     if (!confirmed) return;
     setItinerary((prev) => prev.filter((activity) => activity.id !== id));
+    toast.success("Activity deleted successfully!");
   }
 
-  //edit
+  //edit (open form, save, canel)
   function handleEditActivity(activity) {
     setEditingItem(activity);
   }
+  
   function handleSaveEdit(updatedItem) {
     setItinerary((prev) =>
       prev.map((activity) =>
@@ -115,12 +114,14 @@ function ItineraryPage() {
     );
 
     setEditingItem(null);
+    toast.success("Activity updated successfully!");
   }
+
   function handleCancelEdit() {
     setEditingItem(null);
   }
 
-  //filter
+  // set default filter
   function handleClearFilters() {
     setFilters({
       date: "All",
@@ -148,7 +149,6 @@ function ItineraryPage() {
             setFilters={setFilters}
             availableDates={availableDates}
             onClearFilters={handleClearFilters}
-            onAddActivity={handleAddActivityClick}
           />
           <Link
             to={"/itinerary/add-activity"}

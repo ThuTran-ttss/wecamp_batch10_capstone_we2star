@@ -22,7 +22,7 @@ import { tripDetails } from "@/mock_data";
 import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
 import BudgetSection from "@/components/itinerary/BudgetSection";
-import { useLocation, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate } from "react-router-dom";
 import FormButton from "@/components/itinerary/form/FormButton";
 const TRIP_DETAILS_KEY = "trip_details";
 const AddActivity = () => {
@@ -284,11 +284,10 @@ const AddActivity = () => {
                     key={priority}
                     type="button"
                     onClick={() => setValue("priority", priority)}
-                    className={`rounded-xl py-2 text-sm transition ${
-                      isActive
+                    className={`rounded-xl py-2 text-sm transition ${isActive
                         ? "cursor-pointer border border-blue-500 bg-white font-semibold text-blue-500"
                         : "cursor-pointer bg-gray-100 font-medium text-gray-500"
-                    }`}
+                      }`}
                   >
                     {priority}
                   </button>
@@ -349,13 +348,15 @@ const AddActivity = () => {
           </div>
           {/* FOOTER */}
           <div className="flex justify-end gap-3 pt-4">
-            <FormButton variant="secondary" className="w-auto px-6 py-2">
-              Cancel
-            </FormButton>
-
-            <FormButton type="submit" className="w-auto px-6 py-2">
-              Save Activity
-            </FormButton>
+            <Link to="/itinerary">
+              <FormButton variant="secondary" className="w-auto px-6 py-2">
+                Cancel
+              </FormButton>
+            </Link>
+              <FormButton type="submit" className="w-auto px-6 py-2">
+                Save Activity
+              </FormButton>
+              
           </div>
         </form>
       </div>
