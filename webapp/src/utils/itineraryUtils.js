@@ -2,19 +2,22 @@
 export function isOverdueActivity(activity) {
   if (!activity.date || !activity.time) return false;
   const now = new Date();
-  const activityDateTime = new Date(`${activity.date}T${activity.time}`)
-  return activityDateTime < now && activity.status !== "Done"
+  const activityDateTime = new Date(`${activity.date}T${activity.time}`);
+  return activityDateTime < now && activity.status !== "Done";
 }
 
 //use for filter button
 export function filterItinerary(itinerary, filters) {
   return itinerary.filter((activity) => {
     const matchDate = filters.date === "All" || activity.date === filters.date;
-    const matchCategory = filters.category === "All" || activity.category === filters.category;
-    const matchStatus = filters.status === "All" || activity.status === filters.status;
-    const matchPriority = filters.priority === "All" || activity.priority === filters.priority;
+    const matchCategory =
+      filters.category === "All" || activity.category === filters.category;
+    const matchStatus =
+      filters.status === "All" || activity.status === filters.status;
+    const matchPriority =
+      filters.priority === "All" || activity.priority === filters.priority;
     return matchDate && matchCategory && matchStatus && matchPriority;
-  })
+  });
 }
 
 // use for grouping activity
@@ -25,8 +28,7 @@ export function groupItineraryByDate(itinerary) {
     }
     result[activity.date].push(activity);
     return result;
-
-  }, {})
+  }, {});
 }
 
 //use to calculate stats
@@ -44,30 +46,26 @@ export function getItineraryStats(itinerary) {
       overdueActivities++;
     }
   }
-  const totalDays = new Set(
-    itinerary.map((activity) => activity.date)
-  ).size;
+  const totalDays = new Set(itinerary.map((activity) => activity.date)).size;
   return {
     totalActivities,
     completedActivities,
     overdueActivities,
-    totalDays
-  }
+    totalDays,
+  };
 }
 
 //use for filter date
 export function getUniqueDates(itinerary) {
-  const uniqueDateList = new Set(
-    itinerary.map(activity => activity.date)
-  );
+  const uniqueDateList = new Set(itinerary.map((activity) => activity.date));
   return [...uniqueDateList].sort();
 }
 // use for dropdown filter or button
 export function formatShortDate(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
-    day: "numeric"
-  })
+    day: "numeric",
+  });
 }
 //use for date appearance
 export function formatFullDate(dateString) {
@@ -75,47 +73,53 @@ export function formatFullDate(dateString) {
     weekday: "short",
     month: "long",
     day: "numeric",
-    year: "numeric"
-  })
+    year: "numeric",
+  });
 }
 
 export function getWeekday(dateString) {
   return new Date(dateString).toLocaleDateString("en-US", {
-    weekday: "short"
-  })
+    weekday: "short",
+  });
 }
 
-//Use to validate Edit Activity form 
+//Use to validate Edit Activity form
 export function validateItineraryForm(formData) {
-  const errors = {}
+  const errors = {};
 
   if (!formData.title.trim()) {
-    errors.title = "Title is required"
+    errors.title = "Title is required";
   }
 
   if (!formData.location.trim()) {
-    errors.location = "Location is required"
+    errors.location = "Location is required";
   }
 
   if (!formData.date) {
-    errors.date = "Date is required"
+    errors.date = "Date is required";
   }
 
   if (!formData.time) {
-    errors.time = "Time is required"
+    errors.time = "Time is required";
   }
 
   if (!formData.category) {
-    errors.category = "Category is required"
+    errors.category = "Category is required";
   }
 
   if (!formData.priority) {
-    errors.priority = "Priority is required"
+    errors.priority = "Priority is required";
   }
 
   if (!formData.status) {
-    errors.status = "Status is required"
+    errors.status = "Status is required";
   }
 
-  return errors
+  return errors;
 }
+export const formatVND = (value) => {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(value);
+};

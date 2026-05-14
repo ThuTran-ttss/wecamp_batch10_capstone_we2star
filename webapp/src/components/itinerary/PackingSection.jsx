@@ -24,7 +24,7 @@ const PackingSection = ({
 }) => {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
-
+  const [editingPaking, setEditingPaking] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -35,12 +35,21 @@ const PackingSection = ({
   );
   const handleAddPackingItem = (data) => {
     const newItem = {
-      id: Date.now(),
+      id: editingPaking?.id || Date.now(),
       ...data.packing,
       quantity,
     };
+    setSelectedPackingItems((prev) => {
+      const exists = prev.some((item) => item.id === newItem.id);
 
-    setSelectedPackingItems((prev) => [...prev, newItem]);
+      // update
+      if (exists) {
+        return prev.map((item) => (item.id === newItem.id ? newItem : item));
+      }
+
+      // create
+      return [...prev, newItem];
+    });
 
     setValue("packing.itemName", "");
 
@@ -185,7 +194,7 @@ const PackingSection = ({
                         setShowForm(true);
 
                         setIsEditing(true);
-
+                        setEditingPaking(existingItem);
                         setQuantity(existingItem.quantity);
 
                         setValue("packing.category", existingItem.category);
@@ -311,7 +320,7 @@ const PackingSection = ({
                 <div className="flex gap-3">
                   <FormButton
                     onClick={handleValidatePacking}
-                    className="flex items-center justify-center gap-2 w-full"
+                    className="flex w-full items-center justify-center gap-2"
                   >
                     {isEditing ? "Update Item" : "Add Item"}
                   </FormButton>

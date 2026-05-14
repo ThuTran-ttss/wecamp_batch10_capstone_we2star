@@ -22,7 +22,8 @@ const BudgetSection = ({
   const [budgetName, setBudgetName] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
+  const [editingBudgetId, setEditingBudgetId] = useState(null);
+  const [editingBudget, setEditingBudget] = useState(null);
   const existingExpense = [...budgetItems, ...selectedBudgets].find(
     (item) => item?.name?.toLowerCase() === budgetName.toLowerCase(),
   );
@@ -42,13 +43,24 @@ const BudgetSection = ({
     const budgetData = getValues("budget");
 
     const newBudget = {
-      id: Date.now(),
+      id: editingBudget?.id || Date.now(),
 
       ...budgetData,
     };
 
-    setSelectedBudgets((prev) => [...prev, newBudget]);
+    setSelectedBudgets((prev) => {
+      const exists = prev.some((item) => item.id === newBudget.id);
 
+      // update
+      if (exists) {
+        return prev.map((item) =>
+          item.id === newBudget.id ? newBudget : item,
+        );
+      }
+
+      // create
+      return [...prev, newBudget];
+    });
     setShowForm(false);
 
     setValue("budget.name", "");
@@ -72,12 +84,11 @@ const BudgetSection = ({
     const selectedBudget = selectedBudgets.find(
       (budget) => budget.name === budgetName,
     );
-
     if (!selectedBudget) return;
 
     setShowForm(true);
     setIsEditing(true);
-
+    setEditingBudget(selectedBudget);
     setValue("budget.name", selectedBudget.name);
 
     setValue("budget.category", selectedBudget.category);
@@ -88,9 +99,9 @@ const BudgetSection = ({
 
     setValue("budget.paymentStatus", selectedBudget.paymentStatus);
 
-    setSelectedBudgets((prev) =>
-      prev.filter((budget) => budget.name !== budgetName),
-    );
+    // setSelectedBudgets((prev) =>
+    //   prev.filter((budget) => budget.name !== budgetName),
+    // );
   };
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-300 bg-white transition-all duration-300">
@@ -171,12 +182,14 @@ const BudgetSection = ({
                     </div>
                   </div>
 
-                  <button
-                    type="button"
+                  <FormButton
+                    variant="secondary"
+                    className="border-blue-300! text-blue-600! hover:bg-blue-50"
                     onClick={() => {
                       setShowForm(true);
 
                       setIsEditing(true);
+                      setEditingBudget(existingExpense);
 
                       setValue("budget.name", existingExpense.name);
 
@@ -184,10 +197,13 @@ const BudgetSection = ({
 
                       setValue(
                         "budget.estimatedCost",
-                        existingExpense.estimatedCost,
+                        Number(existingExpense.estimatedCost),
                       );
 
-                      setValue("budget.actualCost", existingExpense.actualCost);
+                      setValue(
+                        "budget.actualCost",
+                        Number(existingExpense.actualCost) || 0,
+                      );
 
                       setValue(
                         "budget.paymentStatus",
@@ -200,10 +216,9 @@ const BudgetSection = ({
                         ),
                       );
                     }}
-                    className="rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
                   >
                     Edit Existing Expense
-                  </button>
+                  </FormButton>
                 </div>
               </div>
             )}
@@ -261,6 +276,7 @@ const BudgetSection = ({
                     type="number"
                     placeholder=""
                     icon={DollarSign}
+                    {...register("budget.actualCost")}
                   />
                 </div>
 
@@ -273,7 +289,11 @@ const BudgetSection = ({
                   <FormButton
                     variant="secondary"
                     className="w-full"
-                    onClick={() => setShowForm(false)}
+                    onClick={() => {
+                      setShowForm(false);
+                      setBudgetName("");
+                      setValue("budget.name", "");
+                    }}
                   >
                     Cancel
                   </FormButton>

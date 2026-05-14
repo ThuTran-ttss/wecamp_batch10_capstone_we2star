@@ -3,7 +3,6 @@ import React from "react";
 import { Package, Pencil, Trash2 } from "lucide-react";
 
 const PackingItem = ({ item, onEdit, onDelete }) => {
-  console.log(item.packed);
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-3 transition hover:border-gray-300">
       <div className="flex items-start justify-between gap-3">

@@ -22,7 +22,7 @@ import { tripDetails } from "@/mock_data";
 import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
 import BudgetSection from "@/components/itinerary/BudgetSection";
-import {Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import FormButton from "@/components/itinerary/form/FormButton";
 const TRIP_DETAILS_KEY = "trip_details";
 const AddActivity = () => {
@@ -46,7 +46,7 @@ const AddActivity = () => {
       category: "",
       estimatedCost: "",
       actualCost: "",
-      paymentStatus: "UnPaid",
+      paymentStatus: "",
     },
   };
   const {
@@ -115,7 +115,6 @@ const AddActivity = () => {
   };
 
   const onSubmit = (data) => {
-    console.log(data);
 
     if (showPacking && selectedPackingItems.length === 0) {
       toast.warning("Please add at least one packing item.");
@@ -130,32 +129,69 @@ const AddActivity = () => {
     }
 
     const savedTrips = JSON.parse(localStorage.getItem("tripDetails")) || [];
-    console.log(savedTrips[tripId], tripId);
-    savedTrips[tripId].packingList = [
-      ...(savedTrips[tripId].packingList || []),
-      ...selectedPackingItems,
-    ];
 
-    savedTrips[tripId].budgetItems = [
-      ...(savedTrips[tripId].budgetItems || []),
-      ...selectedBudgets,
-    ];
+    const existingPackingItems = savedTrips[tripId].packingList || [];
 
-    // activity
+    const updatedPackingItems = [...existingPackingItems];
+
+    selectedPackingItems.forEach((newItem) => {
+      const existingIndex = updatedPackingItems.findIndex(
+        (item) => item.id === newItem.id,
+      );
+
+      // update
+      if (existingIndex !== -1) {
+        updatedPackingItems[existingIndex] = newItem;
+      }
+
+      // create
+      else {
+        updatedPackingItems.push(newItem);
+      }
+    });
+
+    savedTrips[tripId].packingList = updatedPackingItems;
+
+    // Add budget
+    const existingBudgetItems = savedTrips[tripId].budgetItems || [];
+
+    const formattedSelectedBudgets = selectedBudgets.map((item) => ({
+      ...item,
+      estimatedCost: Number(item.estimatedCost) || 0,
+      actualCost: Number(item.actualCost) || 0,
+    }));
+
+    const updatedBudgetItems = [...existingBudgetItems];
+
+    formattedSelectedBudgets.forEach((newItem) => {
+      const existingIndex = updatedBudgetItems.findIndex(
+        (item) => item.id === newItem.id,
+      );
+
+      // update
+      if (existingIndex !== -1) {
+        updatedBudgetItems[existingIndex] = newItem;
+      }
+
+      // create
+      else {
+        updatedBudgetItems.push(newItem);
+      }
+    });
+
+    savedTrips[tripId].budgetItems = updatedBudgetItems;
+
+    const { budget, packing, ...activityData } = data;
     const newActivity = {
       id: uuidv4(),
-      ...data,
+      ...activityData,
     };
 
     savedTrips[tripId].itinerary = [
       ...savedTrips[tripId]?.itinerary,
       newActivity,
     ];
-    console.log(selectedPackingItems);
 
-    console.log(selectedBudgets);
-
-    console.log(newActivity);
     // save
     localStorage.setItem("tripDetails", JSON.stringify(savedTrips));
 
@@ -284,10 +320,11 @@ const AddActivity = () => {
                     key={priority}
                     type="button"
                     onClick={() => setValue("priority", priority)}
-                    className={`rounded-xl py-2 text-sm transition ${isActive
+                    className={`rounded-xl py-2 text-sm transition ${
+                      isActive
                         ? "cursor-pointer border border-blue-500 bg-white font-semibold text-blue-500"
                         : "cursor-pointer bg-gray-100 font-medium text-gray-500"
-                      }`}
+                    }`}
                   >
                     {priority}
                   </button>
@@ -353,10 +390,9 @@ const AddActivity = () => {
                 Cancel
               </FormButton>
             </Link>
-              <FormButton type="submit" className="w-auto px-6 py-2">
-                Save Activity
-              </FormButton>
-              
+            <FormButton type="submit" className="w-auto px-6 py-2">
+              Save Activity
+            </FormButton>
           </div>
         </form>
       </div>
