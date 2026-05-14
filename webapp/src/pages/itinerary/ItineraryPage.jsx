@@ -190,6 +190,7 @@ function ItineraryPage() {
                 activities={groupedItinerary[date]}
                 onDelete={handleDeleteActivity}
                 onEdit={handleEditActivity}
+                tripId={currentTrip.tripId}
               />
             ))
           )}

@@ -8,10 +8,10 @@ import ActivityInput from "./form/ActivityInput";
 import ActivitySelect from "./form/ActivitySelect";
 import RadioButton from "./form/RadioButton";
 import { packingCategories } from "@/constants/packing";
+import FormButton from "./form/FormButton";
 
 const PackingSection = ({
   register,
-  watch,
   setValue,
   reset,
   errors,
@@ -21,7 +21,6 @@ const PackingSection = ({
   getValues,
   clearErrors,
   packingItems,
-  initialValue,
 }) => {
   const [itemName, setItemName] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -34,7 +33,6 @@ const PackingSection = ({
     (item) =>
       (item?.name || item?.itemName)?.toLowerCase() === itemName.toLowerCase(),
   );
-  console.log(existingItem);
   const handleAddPackingItem = (data) => {
     const newItem = {
       id: Date.now(),
@@ -44,15 +42,13 @@ const PackingSection = ({
 
     setSelectedPackingItems((prev) => [...prev, newItem]);
 
-    reset({
-      ...data,
-      packing: {
-        itemName: "",
-        category: "",
-        packed: "No",
-        required: "No",
-      },
-    });
+    setValue("packing.itemName", "");
+
+    setValue("packing.category", "");
+
+    setValue("packing.packed", "No");
+
+    setValue("packing.required", "No");
     setQuantity(1);
     setShowForm(!showForm);
     setItemName("");
@@ -98,7 +94,6 @@ const PackingSection = ({
     const selectedItem = selectedPackingItems.find(
       (item) => item.itemName === itemName,
     );
-
     if (!selectedItem) return;
 
     setShowForm(true);
@@ -139,7 +134,6 @@ const PackingSection = ({
                     if (!showForm) return true;
 
                     const lowerValue = value.toLowerCase();
-                    console.log(packingItems);
                     const existedInPackingList = packingItems.some((item) => {
                       if (isEditing && item?.id === existingItem?.id) {
                         return false;
@@ -184,18 +178,22 @@ const PackingSection = ({
                       </p>
                     </div>
 
-                    <button
-                      type="button"
+                    <FormButton
+                      variant="secondary"
+                      className="rounded-lg border-blue-300 px-4 py-2 text-blue-600 hover:bg-blue-50"
                       onClick={() => {
                         setShowForm(true);
 
                         setIsEditing(true);
-                        console.log(existingItem);
+
                         setQuantity(existingItem.quantity);
 
                         setValue("packing.category", existingItem.category);
+
                         setValue("packing.packed", existingItem.packed);
+
                         setValue("packing.required", existingItem.required);
+
                         setSelectedPackingItems((prev) =>
                           prev.filter(
                             (item) =>
@@ -204,23 +202,20 @@ const PackingSection = ({
                           ),
                         );
                       }}
-                      className="rounded-lg border border-blue-300 bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
                     >
                       Edit Existing Item
-                    </button>
+                    </FormButton>
                   </div>
                 </div>
               )}
               {/* NEW ITEM */}
               {itemName && !existingItem && !showForm && (
-                <button
-                  type="button"
+                <FormButton
                   onClick={() => setShowForm(true)}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                  className="mt-4 flex w-full items-center justify-center gap-2"
                 >
-                  <Plus size={18} />
                   Add New Item
-                </button>
+                </FormButton>
               )}
             </div>
 
@@ -314,35 +309,34 @@ const PackingSection = ({
 
                 {/* ACTION BUTTON */}
                 <div className="flex gap-3">
-                  <button
+                  <FormButton
                     onClick={handleValidatePacking}
-                    type="button"
-                    className="1flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                    className="flex items-center justify-center gap-2 w-full"
                   >
-                    <Plus size={18} />
-
                     {isEditing ? "Update Item" : "Add Item"}
-                  </button>
+                  </FormButton>
 
-                  <button
-                    type="button"
+                  <FormButton
+                    variant="secondary"
+                    className="w-full"
                     onClick={() => {
                       setShowForm(false);
-                      reset({
-                        packing: {
-                          itemName: "",
-                          category: "",
-                          packed: "false",
-                          required: "true",
-                        },
-                      });
+
+                      setValue("packing.itemName", "");
+
+                      setValue("packing.category", "");
+
+                      setValue("packing.packed", "No");
+
+                      setValue("packing.required", "No");
+
                       clearErrors("packing");
+
                       setIsEditing(false);
                     }}
-                    className="rounded-xl border px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                   >
                     Cancel
-                  </button>
+                  </FormButton>
                 </div>
               </>
             )}

@@ -6,6 +6,7 @@ import ActivityInput from "./form/ActivityInput";
 import ActivitySelect from "./form/ActivitySelect";
 import { budgetCategories, paymentStatuses } from "@/constants/budget";
 import BudgetItem from "./BudgetItem";
+import FormButton from "./form/FormButton";
 
 const BudgetSection = ({
   register,
@@ -17,7 +18,6 @@ const BudgetSection = ({
   selectedBudgets,
   reset,
   setValue,
-  initialValue,
 }) => {
   const [budgetName, setBudgetName] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -50,15 +50,17 @@ const BudgetSection = ({
     setSelectedBudgets((prev) => [...prev, newBudget]);
 
     setShowForm(false);
-    reset({
-      budget: {
-        name: "",
-        category: "",
-        estimatedCost: 0,
-        actualCost: 0,
-        paymentStatus: "UnPaid",
-      },
-    });
+
+    setValue("budget.name", "");
+
+    setValue("budget.category", "");
+
+    setValue("budget.estimatedCost", "");
+
+    setValue("budget.actualCost", "");
+
+    setValue("budget.paymentStatus", "");
+
     setBudgetName("");
   };
   const handleDeleteBudgetItem = (budgetName) => {
@@ -207,14 +209,13 @@ const BudgetSection = ({
             )}
             {/* SHOW FORM BUTTON */}
             {!showForm && budgetName && !existingExpense && (
-              <button
-                type="button"
+              <FormButton
                 onClick={() => setShowForm(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+                className="flex w-full items-center justify-center gap-2"
               >
                 <Plus size={18} />
                 Add Expense
-              </button>
+              </FormButton>
             )}
 
             {/* FORM */}
@@ -246,7 +247,7 @@ const BudgetSection = ({
                   <ActivityInput
                     label="Estimated cost"
                     type="number"
-                    placeholder="100"
+                    placeholder=""
                     required
                     icon={DollarSign}
                     error={errors.budget?.estimatedCost?.message}
@@ -258,28 +259,24 @@ const BudgetSection = ({
                   <ActivityInput
                     label="Actual cost"
                     type="number"
-                    placeholder="90"
+                    placeholder=""
                     icon={DollarSign}
                   />
                 </div>
 
                 {/* ACTIONS */}
                 <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={handleAddBudget}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700"
-                  >
+                  <FormButton onClick={handleAddBudget} className="w-full">
                     Save Expense
-                  </button>
+                  </FormButton>
 
-                  <button
-                    type="button"
+                  <FormButton
+                    variant="secondary"
+                    className="w-full"
                     onClick={() => setShowForm(false)}
-                    className="rounded-xl border px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
                   >
                     Cancel
-                  </button>
+                  </FormButton>
                 </div>
               </>
             )}

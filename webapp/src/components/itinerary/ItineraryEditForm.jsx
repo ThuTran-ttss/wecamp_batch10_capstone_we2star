@@ -1,52 +1,52 @@
-import { useEffect, useState } from "react"
-import { validateItineraryForm } from "../../utils/itineraryUtils"
+import { useEffect, useState } from "react";
+import { validateItineraryForm } from "../../utils/itineraryUtils";
 
 function ItineraryEditForm({ editingItem, onSave, onCancel }) {
-  const [formData, setFormData] = useState(editingItem)
-  const [errors, setErrors] = useState({})
+  const [formData, setFormData] = useState(editingItem);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    setFormData(editingItem)
-    setErrors({})
-  }, [editingItem])
+    setFormData(editingItem);
+    setErrors({});
+  }, [editingItem]);
 
-  if (!formData) return null
+  if (!formData) return null;
 
   function handleChange(event) {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
+    }));
   }
 
   function handleSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
 
-    const validationErrors = validateItineraryForm(formData)
+    const validationErrors = validateItineraryForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
-      return
+      setErrors(validationErrors);
+      return;
     }
 
-    onSave(formData)
+    onSave(formData);
   }
 
   return (
     <div
       onClick={onCancel}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4">
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+    >
       <form
         onSubmit={handleSubmit}
         onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-xl">
+        className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-xl"
+      >
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
-              Edit Activity
-            </h2>
+            <h2 className="text-xl font-bold text-slate-900">Edit Activity</h2>
             <p className="text-sm text-slate-500">
               Update itinerary activity information
             </p>
@@ -155,9 +155,7 @@ function ItineraryEditForm({ editingItem, onSave, onCancel }) {
           </label>
 
           <label className="space-y-1 md:col-span-2">
-            <span className="text-sm font-semibold text-slate-700">
-              Status
-            </span>
+            <span className="text-sm font-semibold text-slate-700">Status</span>
             <select
               name="status"
               value={formData.status}
@@ -182,14 +180,14 @@ function ItineraryEditForm({ editingItem, onSave, onCancel }) {
 
           <button
             type="submit"
-            className="rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className="cursor-pointer rounded-xl bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
           >
             Save Changes
           </button>
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default ItineraryEditForm
+export default ItineraryEditForm;

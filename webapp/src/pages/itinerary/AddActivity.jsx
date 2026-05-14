@@ -1,15 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   CalendarDays,
   Clock3,
   MapPin,
-  ChevronDown,
-  Trash2,
-  Plus,
   BriefcaseBusiness,
   Backpack,
-  Pencil,
   Captions,
 } from "lucide-react";
 import ActivityInput from "@/components/itinerary/form/ActivityInput";
@@ -27,6 +23,7 @@ import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
 import BudgetSection from "@/components/itinerary/BudgetSection";
 import { useLocation, useNavigate } from "react-router-dom";
+import FormButton from "@/components/itinerary/form/FormButton";
 const TRIP_DETAILS_KEY = "trip_details";
 const AddActivity = () => {
   const initialValue = {
@@ -47,8 +44,8 @@ const AddActivity = () => {
     budget: {
       name: "",
       category: "",
-      estimatedCost: 0,
-      actualCost: 0,
+      estimatedCost: "",
+      actualCost: "",
       paymentStatus: "UnPaid",
     },
   };
@@ -70,6 +67,7 @@ const AddActivity = () => {
 
   const location = useLocation();
   const tripId = location.state?.tripId;
+  const activityDate = location.state?.date;
   const [selectedPackingItems, setSelectedPackingItems] = useState([]);
   const [selectedBudgets, setSelectedBudgets] = useState([]);
   const [showBudget, setShowBugdet] = useState(false);
@@ -84,7 +82,7 @@ const AddActivity = () => {
       return parsedTrips[tripId]?.packingList || [];
     }
 
-    return tripDetails[tripId].packingList;
+    return tripDetails[tripId]?.packingList;
   };
   const getInitialBudgetItems = () => {
     const savedTrips = localStorage.getItem(TRIP_DETAILS_KEY);
@@ -95,7 +93,7 @@ const AddActivity = () => {
       return parsedTrips[tripId]?.budgetItems || [];
     }
 
-    return tripDetails[tripId].budgetItems;
+    return tripDetails[tripId]?.budgetItems;
   };
   const [budgetItems, setBudgetItems] = useState(getInitialBudgetItems);
   const [packingItems, setPackingItems] = useState(getInitialPackingItems);
@@ -131,23 +129,17 @@ const AddActivity = () => {
       return;
     }
 
-    const savedTrips = JSON.parse(localStorage.getItem("tripDetails")) || {};
+    const savedTrips = JSON.parse(localStorage.getItem("tripDetails")) || [];
+    console.log(savedTrips[tripId], tripId);
+    savedTrips[tripId].packingList = [
+      ...(savedTrips[tripId].packingList || []),
+      ...selectedPackingItems,
+    ];
 
-    // packing
-    if (selectedPackingItems.length > 0) {
-      savedTrips[tripId].packingList = [
-        ...savedTrips[tripId].packingList,
-        ...selectedPackingItems,
-      ];
-    }
-
-    // budget
-    if (selectedBudgets.length > 0) {
-      savedTrips[tripId].budgetItems = [
-        ...savedTrips[tripId].budgetItems,
-        ...selectedBudgets,
-      ];
-    }
+    savedTrips[tripId].budgetItems = [
+      ...(savedTrips[tripId].budgetItems || []),
+      ...selectedBudgets,
+    ];
 
     // activity
     const newActivity = {
@@ -156,7 +148,7 @@ const AddActivity = () => {
     };
 
     savedTrips[tripId].itinerary = [
-      ...savedTrips[tripId].itinerary,
+      ...savedTrips[tripId]?.itinerary,
       newActivity,
     ];
     console.log(selectedPackingItems);
@@ -186,7 +178,11 @@ const AddActivity = () => {
       },
     });
   };
-
+  useEffect(() => {
+    if (activityDate) {
+      setValue("date", activityDate);
+    }
+  }, [activityDate, setValue]);
   return (
     <div className="bg-slate-50">
       <div className="mx-auto max-w-6xl rounded-2xl py-6">
@@ -235,6 +231,7 @@ const AddActivity = () => {
               {...register("date", {
                 required: "Date is required",
               })}
+              readOnly={!!activityDate}
             />
 
             {/* TIME */}
@@ -271,9 +268,12 @@ const AddActivity = () => {
           </div>
           {/* PRIORITY */}
           <div>
+            {/* PRIORITY */}
             <label className="mb-3 block text-sm font-semibold text-gray-700">
               Priority Level <span className="text-red-500">*</span>
             </label>
+
+            <input type="hidden" {...register("priority")} />
 
             <div className="grid grid-cols-3 gap-3">
               {priorityLevels.map((priority) => {
@@ -289,7 +289,6 @@ const AddActivity = () => {
                         ? "cursor-pointer border border-blue-500 bg-white font-semibold text-blue-500"
                         : "cursor-pointer bg-gray-100 font-medium text-gray-500"
                     }`}
-                    {...register("priority")}
                   >
                     {priority}
                   </button>
@@ -350,19 +349,13 @@ const AddActivity = () => {
           </div>
           {/* FOOTER */}
           <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              className="rounded-xl border px-6 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-            >
+            <FormButton variant="secondary" className="w-auto px-6 py-2">
               Cancel
-            </button>
+            </FormButton>
 
-            <button
-              type="submit"
-              className="rounded-xl bg-blue-600 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-            >
+            <FormButton type="submit" className="w-auto px-6 py-2">
               Save Activity
-            </button>
+            </FormButton>
           </div>
         </form>
       </div>

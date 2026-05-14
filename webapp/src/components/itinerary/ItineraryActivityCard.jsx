@@ -125,7 +125,7 @@ function ItineraryActivityCard({ activity, onEdit, onDelete }) {
         <button
           type="button"
           onClick={() => setIsMenuOpen((prev) => !prev)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900"
           aria-label="Open activity actions"
         >
           <MoreVertical className="h-5 w-5" />

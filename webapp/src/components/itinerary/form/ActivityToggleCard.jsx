@@ -45,7 +45,7 @@ const ActivityToggleCard = ({
       <button
         type="button"
         onClick={onToggle}
-        className={`relative h-6 w-11 rounded-full transition ${
+        className={`relative h-6 w-11 rounded-full transition cursor-pointer ${
           enabled ? "bg-blue-500" : "bg-gray-200"
         }`}
       >

@@ -3,7 +3,7 @@ import React from "react";
 import { Package, Pencil, Trash2 } from "lucide-react";
 
 const PackingItem = ({ item, onEdit, onDelete }) => {
-  console.log(item);
+  console.log(item.packed);
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-3 transition hover:border-gray-300">
       <div className="flex items-start justify-between gap-3">
@@ -44,11 +44,11 @@ const PackingItem = ({ item, onEdit, onDelete }) => {
         </div>
 
         {/* ACTIONS */}
-        <div className="flex items-center gap-2">
+        <div className="flex cursor-pointer items-center gap-2">
           <button
             type="button"
             onClick={() => onEdit(item.itemName)}
-            className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
+            className="cursor-pointer rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
           >
             <Pencil size={16} />
           </button>
@@ -56,7 +56,7 @@ const PackingItem = ({ item, onEdit, onDelete }) => {
           <button
             type="button"
             onClick={() => onDelete(item.itemName)}
-            className="rounded-md p-1.5 text-red-400 transition hover:bg-red-50 hover:text-red-600"
+            className="cursor-pointer rounded-md p-1.5 text-red-400 transition hover:bg-red-50 hover:text-red-600"
           >
             <Trash2 size={16} />
           </button>

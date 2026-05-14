@@ -9,7 +9,7 @@ const RadioButton = ({ label, name, options = [], register }) => {
         {options.map((option) => (
           <label
             key={option.value}
-            className="flex items-center gap-2 text-sm text-gray-700"
+            className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
           >
             <input
               type="radio"
