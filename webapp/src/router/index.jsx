@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AddActivity from "@pages/itinerary/AddActivity";
 import MainLayout from "@/layouts/MainLayout";
 import ItineraryPage from "@/pages/itinerary/ItineraryPage";
+import DashboardPage from "@/pages/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
       {
         path: "itinerary/add-activity",
         element: <AddActivity />,
+      },
+      {
+        path: "dashboard",
+        element: <DashboardPage />,
       },
     ],
   },
