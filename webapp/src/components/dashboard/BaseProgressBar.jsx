@@ -11,12 +11,12 @@ function BaseProgressBar({
 
   return (
     <div
-      className={`overflow relative hidden w-full rounded-full ${bgClass} ${heightClass}`}
+      className={`relative w-full overflow-hidden rounded-full ${bgClass} ${heightClass}`}
     >
       <div
         className={`absolute top-0 left-0 h-full transition-all duration-500 ease-out ${colorClass}`}
-        style={{ width: `${validPercentage}` }}
-      ></div>
+        style={{ width: `${validPercentage}%` }}
+      />
 
       {textInside && (
         <div className="insert-0 absolute z-10 flex items-center justify-center text-xs font-medium text-gray-800">
