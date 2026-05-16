@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import BaseProgressBar from "./BaseProgressBar";
 
-function StatCard({ title, value, subtext, type, percentage }) {
+function StatCard({ title, value = "0", subtext, type, percentage }) {
   const config = {
     itinerary: {
       colors: "bg-blue-500 text-gray-100",
@@ -40,11 +40,10 @@ function StatCard({ title, value, subtext, type, percentage }) {
     },
   };
 
-  console.log(percentage);
-
   const currentConfig = config[type];
   const { Icon, colors, progressColor, textColor } = currentConfig;
-
+  const isValidPercentage =
+    typeof percentage === "number" && !isNaN(percentage);
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
       <div className="flex items-center gap-3">
@@ -53,14 +52,14 @@ function StatCard({ title, value, subtext, type, percentage }) {
         </div>
         <div className="flex flex-col gap-2">
           <span className="text-sm font-bold text-gray-800">{title}</span>
-          <span className={`text-3xl font-extrabold ${textColor}`}>
-            {value}
+          <span className={`text-3xl font-extrabold ${textColor} truncate`}>
+            {value ?? "0"}
           </span>
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        {percentage !== undefined && (
+        {isValidPercentage && (
           <BaseProgressBar
             percentage={percentage}
             colorClass={progressColor}
