@@ -28,7 +28,7 @@ function DashboardPage() {
 
       return tripDetails[currentTripId];
     } catch (error) {
-      console.error("Lỗi phân tích cú pháp dữ liệu hệ thống:", error);
+      console.error("Failed to parse trip details from localStorage:", error);
       return tripDetails[currentTripId];
     }
   });
