@@ -1,3 +1,12 @@
+import {
+  Plane,
+  Bed,
+  Utensils,
+  ShoppingBag,
+  Ticket,
+  Package,
+} from "lucide-react";
+
 export function calculateItineraryStats(activities = []) {
   if (activities.length === 0) return { completed: 0, total: 0, percent: 0 };
 
@@ -55,10 +64,74 @@ export function calculateOverdueActivities(activities = []) {
     const activityDateTimeString = `${activity.date}T${timeString}:00`;
 
     const activityDate = new Date(activityDateTimeString);
-    console.log(activityDate);
 
     return activityDate < now;
   }).length;
 
   return overdueCount;
+}
+
+export function calculateBudgetCat(budgetItems = [], totalBudget = 0) {
+  const categoryDictionary = {
+    Transport: { icon: Plane, cost: 0 },
+    Accommodation: { icon: Bed, cost: 0 },
+    Food: { icon: Utensils, cost: 0 },
+    Shopping: { icon: ShoppingBag, cost: 0 },
+    Activity: { icon: Ticket, cost: 0 },
+    Other: { icon: Package, cost: 0 },
+  };
+
+  let totalActualUsed = 0;
+
+  budgetItems.forEach((item) => {
+    const actualCost = item.actualCost;
+
+    const cat = item.category;
+
+    if (categoryDictionary[cat]) {
+      categoryDictionary[cat].cost += actualCost;
+    }
+    totalActualUsed += actualCost;
+  });
+
+  const categoryStats = Object.keys(categoryDictionary).map((key) => {
+    const item = categoryDictionary[key];
+
+    const percent =
+      totalBudget > 0 ? Math.round((item.cost / totalBudget) * 100) : 0;
+
+    return {
+      name: key,
+      icon: item.icon,
+      cost: item.cost,
+      percent: percent,
+    };
+  });
+
+  const remainingBudget = Math.max(totalBudget - totalActualUsed, 0);
+
+  return {
+    categoryStats,
+    totalUsed: totalActualUsed,
+    remainingBudget,
+  };
+}
+
+
+export function calculateUnpaidItems(budgetItems = []) {
+
+  const unpaidItems = budgetItems.filter(
+    (item) => item.paymentStatus === "Unpaid",
+  );
+
+  const unpaidAmount = unpaidItems.reduce((sum, item) => {
+    const itemCost =
+      item.actualCost > 0 ? item.actualCost : item.estimatedCost || 0;
+    return sum + itemCost;
+  }, 0);
+
+  return {
+    count: unpaidItems.length,
+    amount: unpaidAmount,
+  };
 }

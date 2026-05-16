@@ -11,6 +11,7 @@ import {
   calculateBudgetStats,
   calculateBudgetUnpaid,
   calculateOverdueActivities,
+  calculateBudgetCat,
 } from "@/utils/dashboardUtils";
 
 function DashboardPage() {
@@ -46,6 +47,12 @@ function DashboardPage() {
   const unpaidStats = calculateBudgetUnpaid(tripData.budgetItems);
   const overdueStats = calculateOverdueActivities(tripData.itinerary);
 
+  // Budget Overview
+  const budgetCatInfo = calculateBudgetCat(
+    tripData.budgetItems,
+    tripData.budget,
+  );
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-6 lg:p-8">
       <div className="flex flex-col gap-1">
@@ -77,7 +84,7 @@ function DashboardPage() {
 
       {/*Row 1: KPI Stat Cards */}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard
           title="Itinerary Completed"
           value={`${itineraryStats.percent}%`}
@@ -126,7 +133,10 @@ function DashboardPage() {
         <div className="lg:col-span-4">
           <BudgetOverview
             totalBudget={tripData.budget}
-            expenses={tripData.budgetItems || tripData.itinerary || []}
+            remainingBudget={budgetCatInfo.remainingBudget}
+            unpaidItemsCount={unpaidStats.unpaid}
+            unpaidAmount={unpaidStats.amount}
+            categoryStats={budgetCatInfo.categoryStats}
           />
         </div>
       </div>
