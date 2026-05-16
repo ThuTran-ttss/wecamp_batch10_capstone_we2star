@@ -5,6 +5,13 @@ import BudgetOverview from "@/components/dashboard/BudgetOverview";
 import UpcomingItinerary from "@/components/dashboard/UpcomingItinerary";
 import PackingProgress from "@/components/dashboard/PackingProgress";
 import { tripDetails } from "@/mock_data";
+import {
+  calculateItineraryStats,
+  calculatePackingStats,
+  calculateBudgetStats,
+  calculateBudgetUnpaid,
+  calculateOverdueActivities,
+} from "@/utils/dashboardUtils";
 
 function DashboardPage() {
   const currentTripId = "trip_001";
@@ -28,6 +35,16 @@ function DashboardPage() {
   if (!tripData) {
     return <div className="p-8 text-center text-gray-500">Loading data...</div>;
   }
+
+  // Calculate statistics
+  const itineraryStats = calculateItineraryStats(tripData.itinerary);
+  const packingStats = calculatePackingStats(tripData.packingList);
+  const budgetStats = calculateBudgetStats(
+    tripData.budgetItems,
+    tripData.budget,
+  );
+  const unpaidStats = calculateBudgetUnpaid(tripData.budgetItems);
+  const overdueStats = calculateOverdueActivities(tripData.itinerary);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-6 lg:p-8">
@@ -61,11 +78,39 @@ function DashboardPage() {
       {/*Row 1: KPI Stat Cards */}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <StatCard title="Itinerary Completed" value="75%" type="itinerary" />
-        <StatCard title="Packing Completed" value="60%" type="packing" />
-        <StatCard title="Budget Used" value="82%" type="budget" />
-        <StatCard title="Unpaid Budget Items" value="2" type="unpaid" />
-        <StatCard title="Overdue Activities" value="1" type="overdue" />
+        <StatCard
+          title="Itinerary Completed"
+          value={`${itineraryStats.percent}%`}
+          percentage={itineraryStats.percent}
+          subtext={`${itineraryStats.completed} of ${itineraryStats.total} activities completed`}
+          type="itinerary"
+        />
+        <StatCard
+          title="Packing Completed"
+          value={`${packingStats.percent}%`}
+          percentage={packingStats.percent}
+          subtext={`${packingStats.packed} of ${packingStats.total} items packed`}
+          type="packing"
+        />
+        <StatCard
+          title="Budget Used"
+          value={`${budgetStats.percent}%`}
+          percentage={budgetStats.percent}
+          subtext={`$${budgetStats.used.toLocaleString("en-US")} of $${tripData.budget.toLocaleString("en-US")} used`}
+          type="budget"
+        />
+        <StatCard
+          title="Unpaid Budget Items"
+          value={unpaidStats.unpaid}
+          subtext={`${unpaidStats.amount.toLocaleString("en-US")} pending payment`}
+          type="unpaid"
+        />
+        <StatCard
+          title="Overdue Activities"
+          value={`${overdueStats}`}
+          subtext="Requires your attention"
+          type="overdue"
+        />
       </div>
 
       {/* Row 2: Khối logic */}
