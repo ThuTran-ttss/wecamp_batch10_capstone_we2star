@@ -4,6 +4,7 @@ import AddActivity from "@pages/itinerary/AddActivity";
 import MainLayout from "@/layouts/MainLayout";
 import ItineraryPage from "@/pages/itinerary/ItineraryPage";
 import DashboardPage from "@/pages/DashboardPage";
+import BudgetPage from "@/pages/BudgetPage";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardPage />,
+      },
+      {
+        path: "budget",
+        element: <BudgetPage />,
       },
     ],
   },
