@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AddActivity from "@pages/itinerary/AddActivity";
 import MainLayout from "@/layouts/MainLayout";
 import ItineraryPage from "@/pages/itinerary/ItineraryPage";
+import PackingListPage from "@/pages/PackingListPage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
         path: "itinerary/add-activity",
         element: <AddActivity />,
       },
+      {
+        path: "packing",
+        element: <PackingListPage />,
+      },
     ],
   },
 ]);
@@ -27,3 +32,4 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
+
