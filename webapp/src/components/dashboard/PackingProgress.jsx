@@ -30,7 +30,7 @@ function PackingProgress({ packingData = [] }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ClipboardList size={20} className="text-gray-700" />
+          {/* <ClipboardList size={20} className="text-gray-700" /> */}
           <h2 className="text-lg font-bold text-gray-900">Packing Progress</h2>
         </div>
         <Link
@@ -66,7 +66,7 @@ function PackingProgress({ packingData = [] }) {
               Missing Required Items
             </span>
           </div>
-          <ul className="flex flex-col gap-2 pl-1">
+          <ul className="flex flex-col gap-2 pl-4">
             {missingRequired.map((item) => (
               <li key={item.id} className="text-sm font-medium text-gray-700">
                 {item.name}
