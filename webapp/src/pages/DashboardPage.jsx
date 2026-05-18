@@ -12,6 +12,8 @@ import {
   calculateBudgetUnpaid,
   calculateOverdueActivities,
   calculateBudgetCat,
+  getUnpaidItemsList,
+  getOverdueActivitiesList,
 } from "@/utils/dashboardUtils";
 
 function DashboardPage() {
@@ -52,6 +54,9 @@ function DashboardPage() {
     tripData.budgetItems,
     tripData.budget,
   );
+
+  const unpaidItemsList = getUnpaidItemsList(tripData.budgetItems);
+  const overdueList = getOverdueActivitiesList(tripData.itinerary);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-6 lg:p-8">
@@ -105,18 +110,24 @@ function DashboardPage() {
           percentage={budgetStats.percent}
           subtext={`$${budgetStats.used.toLocaleString("en-US")} of $${tripData.budget.toLocaleString("en-US")} used`}
           type="budget"
+          rawValue={budgetStats.used}
+          totalBudget={tripData.budget}  
         />
         <StatCard
           title="Unpaid Budget Items"
           value={unpaidStats.unpaid}
           subtext={`${unpaidStats.amount.toLocaleString("en-US")} pending payment`}
           type="unpaid"
+          tooltipList={unpaidItemsList}
+          tooltipType="unpaid" 
         />
         <StatCard
           title="Overdue Activities"
           value={`${overdueStats}`}
           subtext="Requires your attention"
           type="overdue"
+          tooltipList={overdueList} 
+          tooltipType="overdue" 
         />
       </div>
 
