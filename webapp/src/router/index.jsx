@@ -6,7 +6,6 @@ import ItineraryPage from "@/pages/itinerary/ItineraryPage";
 import PackingListPage from "@/pages/PackingListPage";
 import DashboardPage from "@/pages/DashboardPage";
 import BudgetPage from "@/pages/BudgetPage";
-import PackingListPage from "@/pages/PackingListPage";
 import MyTripsPage from "@/pages/trips/MyTripsPage";
 import CreateTripPage from "@/pages/trips/CreateTripPage";
 
@@ -22,7 +21,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/dashboard" replace />,
+        element: <Navigate to="/trips" replace />,
       },
       {
         path: "trips",
