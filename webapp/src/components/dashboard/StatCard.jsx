@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   ShoppingBag,
@@ -97,7 +98,7 @@ function StatCard({
           </p>
 
           <div className="flex flex-col gap-1.5">
-            {tooltipList.map((item, index) => (
+            {tooltipList.slice(0, 2).map((item, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between gap-2 rounded-lg bg-gray-800 px-2.5 py-1.5"
@@ -120,6 +121,31 @@ function StatCard({
               </div>
             ))}
           </div>
+
+          {/* View all */}
+          {tooltipList.length > 2 && (
+            <Link
+              to={tooltipType === "unpaid" ? "/budget" : "/itinerary"}
+              className="mt-2 flex items-center justify-end gap-1 text-xs font-semibold text-blue-400 transition-colors hover:text-blue-300"
+            >
+              View all ({tooltipList.length})
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </Link>
+          )}
 
           <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
         </div>

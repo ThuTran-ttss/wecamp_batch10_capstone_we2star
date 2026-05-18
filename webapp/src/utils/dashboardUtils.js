@@ -157,7 +157,7 @@ export function getOverdueActivitiesList(activities = []) {
       return activityDate < now;
     })
     .map((activity) => ({
-      name: activity.name,
+      name: activity.title,
       date: activity.date,
       time: activity.time || "00:00",
     }));
