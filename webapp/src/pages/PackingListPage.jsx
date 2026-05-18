@@ -66,10 +66,10 @@ export default function PackingListPage() {
       prev.map((item) =>
         item.id === id
           ? {
-              ...item,
-              packedStatus:
-                item.packedStatus === "Packed" ? "Not Packed" : "Packed",
-            }
+            ...item,
+            packedStatus:
+              item.packedStatus === "Packed" ? "Not Packed" : "Packed",
+          }
           : item,
       ),
     );
@@ -158,15 +158,10 @@ export default function PackingListPage() {
 
   // ─── Render ──────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-8">
+    <div className="min-h-screen p-8">
       {/* Header */}
       <header className="mb-8">
-        <div className="mb-1 text-sm text-slate-400">
-          My Journeys &gt;{" "}
-          <span className="font-medium text-slate-600">Ha Noi Discovery</span>{" "}
-          &gt;{" "}
-          <span className="font-medium text-slate-900">Packing List</span>
-        </div>
+
         <div className="flex items-center gap-2">
           <h1 className="text-3xl font-bold text-slate-900">
             Ha Noi Discovery
