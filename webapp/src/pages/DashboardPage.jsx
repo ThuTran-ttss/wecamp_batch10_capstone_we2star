@@ -4,6 +4,7 @@ import StatCard from "@/components/dashboard/StatCard";
 import BudgetOverview from "@/components/dashboard/BudgetOverview";
 import UpcomingItinerary from "@/components/dashboard/UpcomingItinerary";
 import PackingProgress from "@/components/dashboard/PackingProgress";
+import { DEFAULT_TRIP_ID, STORAGE_KEYS } from "@/constants/trips";
 import { tripDetails } from "@/mock_data";
 import {
   calculateItineraryStats,
@@ -17,10 +18,12 @@ import {
 } from "@/utils/dashboardUtils";
 
 function DashboardPage() {
-  const currentTripId = "trip_001";
+  const currentTripId =
+    localStorage.getItem(STORAGE_KEYS.CURRENT_TRIP_ID) || DEFAULT_TRIP_ID;
+
   const [tripData, setTripData] = useState(() => {
     try {
-      const savedTrips = localStorage.getItem("tripDetails");
+      const savedTrips = localStorage.getItem(STORAGE_KEYS.TRIP_DETAILS);
 
       if (savedTrips) {
         const parsedTrips = JSON.parse(savedTrips);

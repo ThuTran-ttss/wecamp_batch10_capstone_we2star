@@ -1,5 +1,6 @@
 export { default as AppFooter } from "./AppFooter";
 export { default as Breadcrumbs } from "./Breadcrumbs";
+export { default as CreateTripForm } from "./CreateTripForm";
 export { default as CharCounter } from "./CharCounter";
 export { default as FileUploadZone } from "./FileUploadZone";
 export { default as FormSectionCard } from "./FormSectionCard";

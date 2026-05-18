@@ -1,27 +1,21 @@
 import { useCallback, useState } from "react";
 import { DEFAULT_TRIP_ID, STORAGE_KEYS } from "@/constants/trips";
 import { getInitialTripDetails } from "@/mock_data";
-
-function readTripMapFromStorage() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEYS.TRIP_DETAILS);
-
-    if (saved) {
-      return JSON.parse(saved);
-    }
-  } catch (error) {
-    console.error("Failed to read tripDetails from localStorage:", error);
-  }
-
-  return getInitialTripDetails();
-}
+import {
+  persistTripMap,
+  readTripMapFromStorage,
+} from "@/utils/tripStorage";
 
 export function useTripDetails() {
-  const [tripMap, setTripMap] = useState(readTripMapFromStorage);
+  const [tripMap, setTripMapState] = useState(readTripMapFromStorage);
 
-  const persistTripMap = useCallback((nextMap) => {
-    localStorage.setItem(STORAGE_KEYS.TRIP_DETAILS, JSON.stringify(nextMap));
-    setTripMap(nextMap);
+  const setTripMap = useCallback((nextMap) => {
+    persistTripMap(nextMap);
+    setTripMapState(nextMap);
+  }, []);
+
+  const reloadFromStorage = useCallback(() => {
+    setTripMapState(readTripMapFromStorage());
   }, []);
 
   const getTrip = useCallback(
@@ -44,21 +38,24 @@ export function useTripDetails() {
         },
       };
 
-      persistTripMap({
+      const nextMap = {
         ...tripMap,
         [trip.tripId]: nextTrip,
-      });
+      };
 
+      setTripMap(nextMap);
       return nextTrip;
     },
-    [tripMap, persistTripMap],
+    [tripMap, setTripMap],
   );
 
   const resetToMock = useCallback(() => {
     const initial = getInitialTripDetails();
     persistTripMap(initial);
+    localStorage.setItem(STORAGE_KEYS.CURRENT_TRIP_ID, DEFAULT_TRIP_ID);
+    setTripMapState(initial);
     return initial;
-  }, [persistTripMap]);
+  }, []);
 
   const setCurrentTripId = useCallback((tripId) => {
     localStorage.setItem(STORAGE_KEYS.CURRENT_TRIP_ID, tripId);
@@ -70,7 +67,8 @@ export function useTripDetails() {
 
   return {
     tripMap,
-    setTripMap: persistTripMap,
+    setTripMap,
+    reloadFromStorage,
     getTrip,
     upsertTrip,
     resetToMock,
