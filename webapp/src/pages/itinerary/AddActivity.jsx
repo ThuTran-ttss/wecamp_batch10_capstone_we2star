@@ -18,13 +18,13 @@ import {
 } from "@/constants/itinerary";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
-import { tripDetails } from "@/mock_data";
+import { tripDetails, getInitialTripDetails } from "@/mock_data";
+import { STORAGE_KEYS } from "@/constants/trips";
 import { toast } from "react-toastify";
 import PackingSection from "@/components/itinerary/PackingSection";
 import BudgetSection from "@/components/itinerary/BudgetSection";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import FormButton from "@/components/itinerary/form/FormButton";
-const TRIP_DETAILS_KEY = "trip_details";
 const AddActivity = () => {
   const initialValue = {
     title: "",
@@ -74,7 +74,7 @@ const AddActivity = () => {
   const [showPacking, setShowPacking] = useState(false);
   const selectedPriority = watch("priority");
   const getInitialPackingItems = () => {
-    const savedTrips = localStorage.getItem(TRIP_DETAILS_KEY);
+    const savedTrips = localStorage.getItem(STORAGE_KEYS.TRIP_DETAILS);
 
     if (savedTrips) {
       const parsedTrips = JSON.parse(savedTrips);
@@ -85,7 +85,7 @@ const AddActivity = () => {
     return tripDetails[tripId]?.packingList;
   };
   const getInitialBudgetItems = () => {
-    const savedTrips = localStorage.getItem(TRIP_DETAILS_KEY);
+    const savedTrips = localStorage.getItem(STORAGE_KEYS.TRIP_DETAILS);
 
     if (savedTrips) {
       const parsedTrips = JSON.parse(savedTrips);
@@ -128,7 +128,9 @@ const AddActivity = () => {
       return;
     }
 
-    const savedTrips = JSON.parse(localStorage.getItem("tripDetails")) || [];
+    const savedTrips =
+      JSON.parse(localStorage.getItem(STORAGE_KEYS.TRIP_DETAILS)) ||
+      getInitialTripDetails();
 
     const existingPackingItems = savedTrips[tripId].packingList || [];
 
@@ -193,7 +195,10 @@ const AddActivity = () => {
     ];
 
     // save
-    localStorage.setItem("tripDetails", JSON.stringify(savedTrips));
+    localStorage.setItem(
+      STORAGE_KEYS.TRIP_DETAILS,
+      JSON.stringify(savedTrips),
+    );
 
     toast.success("Activity added successfully!");
 

@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 
 import AddActivity from "@pages/itinerary/AddActivity";
 import MainLayout from "@/layouts/MainLayout";
@@ -6,13 +6,26 @@ import ItineraryPage from "@/pages/itinerary/ItineraryPage";
 import DashboardPage from "@/pages/DashboardPage";
 import BudgetPage from "@/pages/BudgetPage";
 import PackingListPage from "@/pages/PackingListPage";
+import MyTripsPage from "@/pages/trips/MyTripsPage";
+import CreateTripPage from "@/pages/trips/CreateTripPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-
     children: [
+      {
+        index: true,
+        element: <Navigate to="/dashboard" replace />,
+      },
+      {
+        path: "trips",
+        element: <MyTripsPage />,
+      },
+      {
+        path: "trips/new",
+        element: <CreateTripPage />,
+      },
       {
         path: "itinerary",
         element: <ItineraryPage />,
@@ -28,6 +41,8 @@ const router = createBrowserRouter([
       {
         path: "budget",
         element: <BudgetPage />,
+      },
+      {
         path: "packing",
         element: <PackingListPage />,
       },
@@ -40,4 +55,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-
