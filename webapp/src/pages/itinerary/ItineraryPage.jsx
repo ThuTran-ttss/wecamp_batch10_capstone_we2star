@@ -1,53 +1,29 @@
 import { useState, useEffect } from "react";
-import { tripDetails } from "../../mock_data/tripDetails";
 import {
   getItineraryStats,
   groupItineraryByDate,
   filterItinerary,
   getUniqueDates,
-} from "../../utils/itineraryUtils";
-import ItineraryStats from "../../components/itinerary/ItineraryStats";
-import ItineraryDayGroup from "../../components/itinerary/ItineraryDayGroup";
-import ItineraryFilters from "../../components/itinerary/ItineraryFilters";
-import ItineraryEditForm from "../../components/itinerary/ItineraryEditForm";
+} from "@/utils/itineraryUtils";
+import ItineraryStats from "@/components/itinerary/ItineraryStats";
+import ItineraryDayGroup from "@/components/itinerary/ItineraryDayGroup";
+import ItineraryFilters from "@/components/itinerary/ItineraryFilters";
+import ItineraryEditForm from "@/components/itinerary/ItineraryEditForm";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-
-// const ITINERARY_STORAGE_KEY = "itinerary";
+import useCurrentTrip from "@/hooks/useCurrentTrip";
+import { formatTripDateRange } from "@/utils/tripsUtils";
 
 function ItineraryPage() {
-  const currentTrip = tripDetails.trip_001;
   const location = useLocation();
-  //state declaration
-  // const [itinerary, setItinerary] = useState(() => {
-  //   try {
-  //     const savedItinerary = localStorage.getItem(ITINERARY_STORAGE_KEY);
-  //     if (savedItinerary) {
-  //       return JSON.parse(savedItinerary);
-  //     }
-  //     return currentTrip.itinerary;
-  //   } catch (error) {
-  //     console.error("Failed to load itinerary from localStorage", error);
-  //     return currentTrip.itinerary;
-  //   }
-  // });
-  const [itinerary, setItinerary] = useState(() => {
-    try {
-      const savedTrips = localStorage.getItem("tripDetails");
+  const { tripId, trip, updateTrip } = useCurrentTrip();
 
-      if (savedTrips) {
-        const parsedTrips = JSON.parse(savedTrips);
+  const [itinerary, setItinerary] = useState(() => trip?.itinerary ?? []);
 
-        return parsedTrips[currentTrip.tripId]?.itinerary || [];
-      }
+  useEffect(() => {
+    setItinerary(trip?.itinerary ?? []);
+  }, [tripId, location.pathname, trip]);
 
-      return currentTrip.itinerary;
-    } catch (error) {
-      console.error("Failed to load itinerary from localStorage", error);
-
-      return currentTrip.itinerary;
-    }
-  });
   useEffect(() => {
     const scrollToId = location.state?.scrollToId;
 
@@ -66,6 +42,7 @@ function ItineraryPage() {
       }, 100);
     }
   }, [location.state]);
+
   const [filters, setFilters] = useState({
     date: "All",
     category: "All",
@@ -75,40 +52,42 @@ function ItineraryPage() {
 
   const [editingItem, setEditingItem] = useState(null);
 
-  //useEffect autosave (old key)
-  // useEffect(() => {
-  //   localStorage.setItem(ITINERARY_STORAGE_KEY, JSON.stringify(itinerary));
-  // }, [itinerary]);
-  useEffect(() => {
-    const savedTrips =
-      JSON.parse(localStorage.getItem("tripDetails")) || tripDetails;
+  const saveItinerary = (nextItinerary) => {
+    setItinerary(nextItinerary);
+    updateTrip({ itinerary: nextItinerary });
+  };
 
-    savedTrips[currentTrip.tripId].itinerary = itinerary;
+  if (!trip) {
+    return (
+      <motion.div className="p-8 text-center text-gray-500">Trip not found.</motion.div>
+    );
+  }
 
-    localStorage.setItem("tripDetails", JSON.stringify(savedTrips));
-  }, [itinerary, currentTrip.tripId]);
   const stats = getItineraryStats(itinerary);
   const availableDates = getUniqueDates(itinerary);
   const filteredItinerary = filterItinerary(itinerary, filters);
   const groupedItinerary = groupItineraryByDate(filteredItinerary);
   const datesList = Object.keys(groupedItinerary).sort();
+  const dateRange = formatTripDateRange(trip.startDate, trip.endDate);
 
-  //delete
   function handleDeleteActivity(id) {
     const confirmed = window.confirm("Do you want to delete this activity?");
-    if (!confirmed) return;
-    setItinerary((prev) => prev.filter((activity) => activity.id !== id));
+
+    if (!confirmed) {
+      return;
+    }
+
+    saveItinerary(itinerary.filter((activity) => activity.id !== id));
     toast.success("Activity deleted successfully!");
   }
 
-  //edit (open form, save, canel)
   function handleEditActivity(activity) {
     setEditingItem(activity);
   }
-  
+
   function handleSaveEdit(updatedItem) {
-    setItinerary((prev) =>
-      prev.map((activity) =>
+    saveItinerary(
+      itinerary.map((activity) =>
         activity.id === updatedItem.id ? updatedItem : activity,
       ),
     );
@@ -121,7 +100,6 @@ function ItineraryPage() {
     setEditingItem(null);
   }
 
-  // set default filter
   function handleClearFilters() {
     setFilters({
       date: "All",
@@ -134,13 +112,9 @@ function ItineraryPage() {
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold text-slate-900">
-          {currentTrip.tripName}
-        </h1>
+        <h1 className="text-3xl font-bold text-slate-900">{trip.tripName}</h1>
 
-        <p className="mt-2 text-slate-500">
-          {currentTrip.startDate} - {currentTrip.endDate}
-        </p>
+        <p className="mt-2 text-slate-500">{dateRange}</p>
 
         <ItineraryStats stats={stats} />
         <div className="flex items-end justify-between">
@@ -151,8 +125,8 @@ function ItineraryPage() {
             onClearFilters={handleClearFilters}
           />
           <Link
-            to={"/itinerary/add-activity"}
-            state={{ tripId: currentTrip.tripId }}
+            to="/itinerary/add-activity"
+            state={{ tripId, date: availableDates[0] }}
           >
             <button
               type="button"
@@ -190,7 +164,7 @@ function ItineraryPage() {
                 activities={groupedItinerary[date]}
                 onDelete={handleDeleteActivity}
                 onEdit={handleEditActivity}
-                tripId={currentTrip.tripId}
+                tripId={tripId}
               />
             ))
           )}

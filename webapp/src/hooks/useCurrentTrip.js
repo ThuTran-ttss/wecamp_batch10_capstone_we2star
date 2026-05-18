@@ -9,15 +9,15 @@ import { getTripFromMap } from "@/utils/tripStorage";
  */
 export default function useCurrentTrip() {
   const location = useLocation();
-  const { tripMap, getCurrentTripId, setTripMap, setTripMap: persist } =
+  const { tripMap, getCurrentTripId, setTripMap, reloadFromStorage } =
     useTripDetails();
+
+  useEffect(() => {
+    reloadFromStorage();
+  }, [location.pathname, reloadFromStorage]);
 
   const tripId = getCurrentTripId();
   const trip = getTripFromMap(tripMap, tripId);
-
-  useEffect(() => {
-    persist(tripMap);
-  }, [location.pathname]);
 
   const updateTrip = useCallback(
     (updates) => {
@@ -35,12 +35,11 @@ export default function useCurrentTrip() {
         },
       };
 
-      const nextMap = {
+      setTripMap({
         ...tripMap,
         [tripId]: nextTrip,
-      };
+      });
 
-      setTripMap(nextMap);
       return nextTrip;
     },
     [trip, tripId, tripMap, setTripMap],
