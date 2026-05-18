@@ -14,6 +14,12 @@ const CREATE_TRIP_BREADCRUMBS = [
   { label: "Create New Trip" },
 ];
 
+const PACKING_LIST_BREADCRUMBS = [
+  { label: "My Journeys", to: "/trips" },
+  { label: "Ha Noi Discovery", to: "/dashboard" },
+  { label: "Packing List" },
+];
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,6 +58,7 @@ const router = createBrowserRouter([
       {
         path: "packing",
         element: <PackingListPage />,
+        handle: { navBreadcrumbs: PACKING_LIST_BREADCRUMBS },
       },
     ],
   },
