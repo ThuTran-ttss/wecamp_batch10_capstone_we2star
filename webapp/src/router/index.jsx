@@ -5,6 +5,7 @@ import MainLayout from "@/layouts/MainLayout";
 import ItineraryPage from "@/pages/itinerary/ItineraryPage";
 import DashboardPage from "@/pages/DashboardPage";
 import BudgetPage from "@/pages/BudgetPage";
+import PackingListPage from "@/pages/PackingListPage";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,8 @@ const router = createBrowserRouter([
       {
         path: "budget",
         element: <BudgetPage />,
+        path: "packing",
+        element: <PackingListPage />,
       },
     ],
   },
@@ -37,3 +40,4 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
+
