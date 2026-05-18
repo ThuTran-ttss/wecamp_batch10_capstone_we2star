@@ -9,6 +9,11 @@ import PackingListPage from "@/pages/PackingListPage";
 import MyTripsPage from "@/pages/trips/MyTripsPage";
 import CreateTripPage from "@/pages/trips/CreateTripPage";
 
+const CREATE_TRIP_BREADCRUMBS = [
+  { label: "My Trips", to: "/trips" },
+  { label: "Create New Trip" },
+];
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -21,10 +26,12 @@ const router = createBrowserRouter([
       {
         path: "trips",
         element: <MyTripsPage />,
+        handle: { navTitle: "My trips" },
       },
       {
         path: "trips/new",
         element: <CreateTripPage />,
+        handle: { navBreadcrumbs: CREATE_TRIP_BREADCRUMBS },
       },
       {
         path: "itinerary",

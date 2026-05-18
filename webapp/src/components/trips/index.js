@@ -8,6 +8,7 @@ export { default as SegmentedControl } from "./SegmentedControl";
 export { default as TripCard } from "./TripCard";
 export { default as TripPreviewCard } from "./TripPreviewCard";
 export { default as TripSummaryStat } from "./TripSummaryStat";
+export { default as TripsEmptyState } from "./TripsEmptyState";
 export { default as TripsPageHeader } from "./TripsPageHeader";
 export { default as TripsToolbar } from "./TripsToolbar";
 export { default as TripWeatherBadge } from "./TripWeatherBadge";
