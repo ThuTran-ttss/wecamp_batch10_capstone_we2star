@@ -23,6 +23,7 @@ export default defineConfig({
       "@components/dashboard": path.resolve(__dirname, "src/components/dashboard"),
       "@components/itinerary": path.resolve(__dirname, "src/components/itinerary"),
       "@components/packing": path.resolve(__dirname, "src/components/packing"),
+      "@components/trips": path.resolve(__dirname, "src/components/trips"),
       "@assets": path.resolve(__dirname, "src/assets"),
       "@pages": path.resolve(__dirname, "src/pages"),
       "@layouts": path.resolve(__dirname, "src/layouts"),

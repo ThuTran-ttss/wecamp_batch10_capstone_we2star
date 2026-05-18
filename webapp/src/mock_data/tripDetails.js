@@ -1,13 +1,21 @@
-export const tripDetails = {
-  trip_001: {
+import { TRIP_STATUS, WEATHER_ICONS } from "@/constants/trips";
+import { additionalTrips } from "./additionalTrips";
+
+const trip_001 = {
     tripId: "trip_001",
-    tripName: "Nha Trang Family Trip",
+    tripName: "Ha Noi Discovery",
     tripType: "Family",
+    destination: "Hanoi, Vietnam",
+    country: "Vietnam",
     startDate: "2026-06-10",
-    endDate: "2026-06-14",
+    endDate: "2026-06-16",
+    status: TRIP_STATUS.ACTIVE,
     currency: "VND",
     budget: 14000000,
-
+    coverImage:
+      "https://images.unsplash.com/photo-1598902108854-10e335adac99?w=800&q=80",
+    weatherIcon: WEATHER_ICONS.SUNNY,
+    description: "Temples, street food, and Old Quarter walks.",
     itinerary: [
       {
         id: 1,
@@ -388,7 +396,12 @@ export const tripDetails = {
       },
     ],
     meta: {
+      createdAt: "2026-01-01T00:00:00Z",
       lastUpdated: "2026-05-12T00:00:00Z",
     },
-  },
+};
+
+export const tripDetails = {
+  trip_001,
+  ...additionalTrips,
 };
