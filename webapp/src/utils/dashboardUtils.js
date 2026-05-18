@@ -31,7 +31,7 @@ export function calculateBudgetStats(budgetList = [], budget) {
 
   const used = budgetList.reduce((acc, item) => acc + item.actualCost, 0);
 
-  const percent = Math.min(Math.round((used / budget) * 100), 100);
+  const percent = Math.round((used / budget) * 100);
 
   return { used, percent };
 }
@@ -134,4 +134,31 @@ export function calculateUnpaidItems(budgetItems = []) {
     count: unpaidItems.length,
     amount: unpaidAmount,
   };
+}
+
+// Unpaid Budget Items
+export function getUnpaidItemsList(budgetItems = []) {
+  return budgetItems
+    .filter((item) => item.paymentStatus === "Unpaid")
+    .map((item) => ({
+      name: item.name,
+      cost: item.actualCost > 0 ? item.actualCost : item.estimatedCost || 0,
+    }));
+}
+
+// Overdue Activities
+export function getOverdueActivitiesList(activities = []) {
+  const now = new Date();
+  return activities
+    .filter((activity) => {
+      if (activity.status === "Done") return false;
+      const timeString = activity.time || "00:00";
+      const activityDate = new Date(`${activity.date}T${timeString}:00`);
+      return activityDate < now;
+    })
+    .map((activity) => ({
+      name: activity.name,
+      date: activity.date,
+      time: activity.time || "00:00",
+    }));
 }
